@@ -89,7 +89,7 @@ App runs at http://localhost:3000
 |------|------|
 | Jira Board |  |
 | Figma Prototype |https://www.figma.com/files/team/1573883061447164292/project/502847540?fuid=1616317088674264120 |
-| GitHub Repo |  |
+| GitHub Repo |https://github.com/Khalid22333/volunteer-coordination-portal |
 
 ---
 
