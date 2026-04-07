@@ -90,7 +90,7 @@ App runs at http://localhost:3000
 | Jira Board |https://sacstatevolunteering.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog?atlOrigin=eyJpIjoiMjBiNjVkMzc3MDliNDA0YTliOTc5NmYxYjFiMDUyYmUiLCJwIjoiaiJ9|
 | Figma Prototype |https://www.figma.com/files/team/1573883061447164292/project/502847540?fuid=1616317088674264120 |
 | GitHub Repo |https://github.com/Khalid22333/volunteer-coordination-portal |
-
+UPDATED JIRA LINK: https://id.atlassian.com/invite/p/project?id=khbl43xLQVOyO-y9YFd4TQ
 ---
 
 ## License
