@@ -59,28 +59,63 @@ This portal replaces inefficient methods like email announcements and physical s
 
 ### Prerequisites
 - Node.js (v18+)
-- npm or yarn
-- SQL database
+- npm
+- MySQL 8.0+
 - Git
 
-### Installation
-1. Clone the repository
-git clone https://github.com/YOUR-USERNAME/volunteer-coordination-portal.git
-cd volunteer-coordination-portal
+### Backend Setup
 
-2. Install dependencies
-npm install
+1. Clone the repository and enter it:
 
-3. Set up environment variables
-cp .env.example .env
+   ```
+   git clone https://github.com/Khalid22333/volunteer-coordination-portal.git
+   cd volunteer-coordination-portal
+   ```
 
-4. Set up the database
-npm run db:migrate
+2. Initialize the database (from the repo root):
 
-5. Start the development server
-npm run dev
+   ```
+   mysql -u root -p < server/schema.sql
+   ```
 
-App runs at http://localhost:3000
+   This creates the `career_center` database and `users` table. Safe to re-run.
+
+3. Configure backend environment variables:
+
+   ```
+   cd server
+   cp .env.example .env
+   ```
+
+   Open `.env` and fill in your MySQL password and a JWT secret. Generate a secret with:
+
+   ```
+   openssl rand -base64 48
+   ```
+
+4. Install backend dependencies:
+
+   ```
+   npm install
+   ```
+
+5. Start the development server:
+
+   ```
+   npm run dev
+   ```
+
+   The API runs at http://localhost:3001.
+
+### API Endpoints
+
+- `POST /api/auth/signup` — create a new user account
+- `POST /api/auth/login` — log in with email and password
+- `GET /api/auth/me` — get the current user (requires `Authorization: Bearer <token>` header)
+
+### Frontend Setup
+
+_Coming soon — React client will live in a `/client` folder._
 
 ---
 ## Project Management
