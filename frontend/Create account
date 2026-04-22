@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CSUS Career Center Volunteer – Sign Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark: #3a5a2e;
+      --text: #1a1a1a;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --white: #ffffff;
+      --error: #dc2626;
+    }
+    body { font-family: 'DM Sans', sans-serif; height: 100vh; display: flex; overflow: hidden; }
+
+    .left {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 72px;
+      background: var(--white);
+      animation: fadeUp 0.7s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .brand h1 { font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 600; color: var(--text); white-space: nowrap; }
+
+    .form-section { margin-top: 48px; display: flex; flex-direction: column; gap: 20px; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+
+    label { font-size: 0.875rem; font-weight: 500; color: var(--text); }
+
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%; padding: 11px 16px;
+      border: 1px solid var(--border); border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--text);
+      background: var(--white); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input::placeholder { color: #b0b7c3; }
+    input:focus { border-color: var(--green-dark); box-shadow: 0 0 0 3px rgba(58,90,46,0.1); }
+
+    .terms-row { display: flex; align-items: center; gap: 8px; }
+    .terms-row input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--green-dark); cursor: pointer; }
+    .terms-row label { font-size: 0.85rem; color: var(--muted); font-weight: 300; cursor: pointer; }
+    .terms-row a { color: var(--text); font-weight: 500; text-decoration: underline; }
+
+    .btn-primary {
+      width: 100%; padding: 13px; border: none; border-radius: 8px;
+      background: var(--green-dark); color: var(--white);
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+    }
+    .btn-primary:hover { background: #2d4724; box-shadow: 0 4px 14px rgba(58,90,46,0.25); }
+    .btn-primary:active { transform: scale(0.99); }
+
+    .divider { display: flex; align-items: center; gap: 12px; font-size: 0.85rem; color: var(--muted); }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .social-row { display: flex; gap: 12px; }
+    .btn-social {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px 16px; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--white); font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem; color: var(--text); cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .btn-social:hover { border-color: #aab; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+
+    .signin-prompt { text-align: center; font-size: 0.875rem; color: var(--muted); }
+    .signin-prompt a { color: #2563eb; text-decoration: none; font-weight: 500; }
+    .signin-prompt a:hover { text-decoration: underline; }
+
+    .error-msg { font-size: 0.78rem; color: var(--error); display: none; }
+
+    .right { width: 50%; overflow: hidden; }
+    .right img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    @media (max-width: 768px) {
+      .right { display: none; }
+      .left { width: 100%; padding: 40px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="left">
+    <div class="brand"><h1>Get Started Now</h1></div>
+
+    <div class="form-section">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Enter your name" autocomplete="name"/>
+        <span class="error-msg" id="name-error">Name is required.</span>
+      </div>
+
+      <div class="field">
+        <label for="email">Email address</label>
+        <input type="email" id="email" placeholder="Enter your email" autocomplete="email"/>
+        <span class="error-msg" id="email-error">Please enter a valid email address.</span>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" autocomplete="new-password"/>
+        <span class="error-msg" id="pass-error">Password must be at least 8 characters.</span>
+      </div>
+
+      <div class="terms-row">
+        <input type="checkbox" id="terms"/>
+        <label for="terms">I agree to the <a href="#">terms &amp; policy</a></label>
+      </div>
+
+      <button class="btn-primary" onclick="handleSignup()">Signup</button>
+
+      <div class="divider">Or</div>
+
+      <div class="social-row">
+        <button class="btn-social">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18L12.048 13.56c-.806.54-1.836.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+          Sign in with Google
+        </button>
+        <button class="btn-social">
+          <svg width="16" height="18" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 376.6 0 248 0 124.8c0-68.9 13.6-136.8 44.2-196.8A437.07 437.07 0 0 1 155.4 1.7C196.3-5.4 234.7 0 270.2 12.3a437.57 437.57 0 0 1 111.6 60.7c60.2-40.2 134.9-64 217.2-64 70.9 0 144.8 19.1 198.9 56.9.6.4 1.3.8 1.9 1.2z"/></svg>
+          Sign in with Apple
+        </button>
+      </div>
+
+      <p class="signin-prompt">Have an account? <a href="login.html">Sign In</a></p>
+    </div>
+  </div>
+
+  <div class="right">
+    <img src="https://images.unsplash.com/photo-1525498128493-380d1990a112?w=900&q=80" alt="Monstera plant"/>
+  </div>
+
+  <script>
+    function handleSignup() {
+      const name     = document.getElementById('name');
+      const email    = document.getElementById('email');
+      const password = document.getElementById('password');
+      const terms    = document.getElementById('terms');
+
+      document.getElementById('name-error').style.display  = 'none';
+      document.getElementById('email-error').style.display = 'none';
+      document.getElementById('pass-error').style.display  = 'none';
+
+      let valid = true;
+      if (!name.value.trim())                              { document.getElementById('name-error').style.display  = 'block'; valid = false; }
+      if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) { document.getElementById('email-error').style.display = 'block'; valid = false; }
+      if (!password.value || password.value.length < 8)   { document.getElementById('pass-error').style.display  = 'block'; valid = false; }
+      if (!terms.checked) { alert('Please agree to the terms & policy to continue.'); valid = false; }
+      if (!valid) return;
+
+      fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name:     name.value.trim(),
+          email:    email.value.trim(),
+          password: password.value
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          alert(data.error === 'email already registered'
+            ? 'That email is already registered. Try logging in instead.'
+            : data.error);
+          return;
+        }
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        window.location.href = '/landing.html';
+      })
+      .catch(() => alert('Network error. Please try again.'));
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') handleSignup(); });
+  </script>
+</body>
+</html>
