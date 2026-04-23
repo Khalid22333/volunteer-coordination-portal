@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CSUS Career Center Volunteer – Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark: #3a5a2e;
+      --green-mid: #4a7a3a;
+      --green-light: #f0f4ee;
+      --text: #1a1a1a;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --white: #ffffff;
+      --error: #dc2626;
+      --success: #16a34a;
+      --bg: #fafaf9;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* TOP NAV */
+    .top-nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-mini {
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .nav-user strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-logout:hover {
+      border-color: var(--green-dark);
+      background: var(--green-light);
+    }
+
+    /* MAIN CONTAINER */
+    .profile-container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header {
+      margin-bottom: 28px;
+    }
+    .page-header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .page-header p {
+      margin-top: 6px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    /* CARD */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    /* AVATAR HEADER */
+    .avatar-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 28px 32px;
+      background: linear-gradient(135deg, var(--green-light) 0%, #e6ede2 100%);
+    }
+
+    .avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--green-dark);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      flex-shrink: 0;
+    }
+
+    .avatar-info h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .avatar-info p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* SECTIONS */
+    .form-section {
+      padding: 28px 32px;
+    }
+    .form-section + .form-section {
+      border-top: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .section-subtitle {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 300;
+      margin-bottom: 20px;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    textarea {
+      width: 100%;
+      padding: 11px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      resize: vertical;
+    }
+    textarea { min-height: 90px; font-family: 'DM Sans', sans-serif; }
+    input::placeholder, textarea::placeholder { color: #b0b7c3; }
+    input:focus, textarea:focus {
+      border-color: var(--green-dark);
+      box-shadow: 0 0 0 3px rgba(58, 90, 46, 0.1);
+    }
+
+    input[readonly] {
+      background: #f5f5f4;
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+
+    /* DAY CHIPS (availability) */
+    .day-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .day-chip {
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .day-chip:hover { border-color: var(--green-mid); }
+    .day-chip.active {
+      background: var(--green-dark);
+      color: var(--white);
+      border-color: var(--green-dark);
+    }
+
+    /* ACTIONS */
+    .action-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 20px 32px;
+      border-top: 1px solid var(--border);
+      background: #fafaf9;
+    }
+
+    .btn {
+      padding: 11px 22px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s, border-color 0.2s;
+      letter-spacing: 0.01em;
+    }
+    .btn:active { transform: scale(0.99); }
+
+    .btn-primary {
+      background: var(--green-dark);
+      color: var(--white);
+    }
+    .btn-primary:hover {
+      background: #2d4724;
+      box-shadow: 0 4px 14px rgba(58,90,46,0.25);
+    }
+    .btn-primary:disabled {
+      background: #8a9d82;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-secondary {
+      background: var(--white);
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover {
+      border-color: var(--green-dark);
+      background: var(--green-light);
+    }
+
+    .error-msg {
+      font-size: 0.8rem;
+      color: var(--error);
+      display: none;
+    }
+    .error-msg.show { display: block; }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 14px 22px;
+      background: var(--text);
+      color: var(--white);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      z-index: 100;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .toast.success { background: var(--success); }
+    .toast.error   { background: var(--error); }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .top-nav { padding: 14px 20px; }
+      .profile-container { padding: 28px 16px 60px; }
+      .avatar-row { padding: 22px 20px; gap: 14px; }
+      .avatar { width: 56px; height: 56px; font-size: 20px; }
+      .form-section { padding: 22px 20px; }
+      .action-row { padding: 16px 20px; flex-direction: column-reverse; }
+      .action-row .btn { width: 100%; }
+      .field-grid { grid-template-columns: 1fr; }
+      .nav-user span:first-child { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="brand-mini">CSUS Career Center Volunteer</div>
+    <div class="nav-user">
+      <span>Signed in as <strong id="nav-email">—</strong></span>
+      <button class="btn-logout" onclick="handleLogout()">Log out</button>
+    </div>
+  </header>
+
+  <main class="profile-container">
+    <div class="page-header">
+      <h1>Profile Settings</h1>
+      <p>Update your personal information, availability, and password.</p>
+    </div>
+
+    <div class="card">
+
+      <!-- Avatar + name header -->
+      <div class="avatar-row">
+        <div class="avatar" id="avatar">—</div>
+        <div class="avatar-info">
+          <h2 id="display-name">Loading…</h2>
+          <p id="display-email">—</p>
+        </div>
+      </div>
+
+      <!-- Personal Information -->
+      <section class="form-section">
+        <h3 class="section-title">Personal Information</h3>
+        <p class="section-subtitle">This information will be visible to Career Center coordinators.</p>
+
+        <div class="field-grid">
+          <div class="field">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" autocomplete="name" placeholder="Jane Hornet"/>
+            <span class="error-msg" id="name-error">Name is required.</span>
+          </div>
+
+          <div class="field">
+            <label for="email">Email address</label>
+            <input type="email" id="email" autocomplete="email" placeholder="you@csus.edu"/>
+            <span class="error-msg" id="email-error">Please enter a valid email.</span>
+          </div>
+
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" autocomplete="tel" placeholder="(916) 555-0123"/>
+          </div>
+
+          <div class="field">
+            <label for="major">Major / Program</label>
+            <input type="text" id="major" placeholder="Computer Science"/>
+          </div>
+
+          <div class="field full">
+            <label for="bio">About you</label>
+            <textarea id="bio" placeholder="Tell us a bit about yourself and why you want to volunteer."></textarea>
+          </div>
+
+          <div class="field full">
+            <label for="skills">Skills & Interests</label>
+            <input type="text" id="skills" placeholder="e.g. tutoring, event setup, social media, tabling"/>
+          </div>
+        </div>
+      </section>
+
+      <!-- Availability -->
+      <section class="form-section">
+        <h3 class="section-title">Weekly Availability</h3>
+        <p class="section-subtitle">Select the days you're generally available to volunteer.</p>
+
+        <div class="day-chips" id="day-chips">
+          <div class="day-chip" data-day="mon">Mon</div>
+          <div class="day-chip" data-day="tue">Tue</div>
+          <div class="day-chip" data-day="wed">Wed</div>
+          <div class="day-chip" data-day="thu">Thu</div>
+          <div class="day-chip" data-day="fri">Fri</div>
+          <div class="day-chip" data-day="sat">Sat</div>
+          <div class="day-chip" data-day="sun">Sun</div>
+        </div>
+      </section>
+
+      <!-- Password -->
+      <section class="form-section">
+        <h3 class="section-title">Change Password</h3>
+        <p class="section-subtitle">Leave blank if you don't want to change your password.</p>
+
+        <div class="field-grid">
+          <div class="field full">
+            <label for="current-password">Current password</label>
+            <input type="password" id="current-password" autocomplete="current-password" placeholder="Enter current password"/>
+          </div>
+          <div class="field">
+            <label for="new-password">New password</label>
+            <input type="password" id="new-password" autocomplete="new-password" placeholder="At least 8 characters"/>
+            <span class="error-msg" id="new-password-error">Password must be at least 8 characters.</span>
+          </div>
+          <div class="field">
+            <label for="confirm-password">Confirm new password</label>
+            <input type="password" id="confirm-password" autocomplete="new-password" placeholder="Re-enter new password"/>
+            <span class="error-msg" id="confirm-password-error">Passwords don't match.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Actions -->
+      <div class="action-row">
+        <button class="btn btn-secondary" onclick="handleCancel()">Cancel</button>
+        <button class="btn btn-primary" id="save-btn" onclick="handleSave()">Save Changes</button>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast">Profile updated</div>
+
+  <script>
+    const API_BASE = ''; // same origin; change to 'http://localhost:3001' if served separately
+    const DAYS = ['mon','tue','wed','thu','fri','sat','sun'];
+
+    // ---------- Auth guard ----------
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = 'login.html';
+    }
+
+    // ---------- Helpers ----------
+    function getInitials(name) {
+      if (!name) return '?';
+      return name.trim().split(/\s+/).slice(0, 2).map(s => s[0]).join('').toUpperCase();
+    }
+
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show ' + type;
+      setTimeout(() => { t.className = 'toast ' + type; }, 2500);
+    }
+
+    function setError(id, show) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('show', show);
+    }
+
+    function authHeaders() {
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      };
+    }
+
+    // ---------- Load profile ----------
+    async function loadProfile() {
+      try {
+        const res = await fetch(API_BASE + '/api/auth/me', { headers: authHeaders() });
+        if (res.status === 401) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = 'login.html';
+          return;
+        }
+        const data = await res.json();
+        const u = data.user || {};
+
+        document.getElementById('nav-email').textContent = u.email || '—';
+        document.getElementById('display-name').textContent = u.name || '—';
+        document.getElementById('display-email').textContent = u.email || '—';
+        document.getElementById('avatar').textContent = getInitials(u.name);
+
+        document.getElementById('name').value   = u.name   || '';
+        document.getElementById('email').value  = u.email  || '';
+        document.getElementById('phone').value  = u.phone  || '';
+        document.getElementById('major').value  = u.major  || '';
+        document.getElementById('bio').value    = u.bio    || '';
+        document.getElementById('skills').value = u.skills || '';
+
+        // availability comes back as comma-separated, e.g. "mon,wed,fri"
+        const availability = (u.availability || '').split(',').map(s => s.trim()).filter(Boolean);
+        document.querySelectorAll('.day-chip').forEach(chip => {
+          if (availability.includes(chip.dataset.day)) chip.classList.add('active');
+        });
+      } catch (err) {
+        // Backend may not implement all fields yet — fall back to localStorage user
+        const cached = JSON.parse(localStorage.getItem('user') || '{}');
+        document.getElementById('nav-email').textContent = cached.email || '—';
+        document.getElementById('display-name').textContent = cached.name || 'Volunteer';
+        document.getElementById('display-email').textContent = cached.email || '—';
+        document.getElementById('avatar').textContent = getInitials(cached.name);
+        document.getElementById('name').value = cached.name || '';
+        document.getElementById('email').value = cached.email || '';
+        showToast('Could not connect to server', 'error');
+      }
+    }
+
+    // ---------- Day chip toggle ----------
+    document.getElementById('day-chips').addEventListener('click', e => {
+      if (e.target.classList.contains('day-chip')) {
+        e.target.classList.toggle('active');
+      }
+    });
+
+    // ---------- Save ----------
+    async function handleSave() {
+      // Reset errors
+      ['name-error','email-error','new-password-error','confirm-password-error']
+        .forEach(id => setError(id, false));
+
+      const name  = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const major = document.getElementById('major').value.trim();
+      const bio   = document.getElementById('bio').value.trim();
+      const skills = document.getElementById('skills').value.trim();
+
+      const currentPassword = document.getElementById('current-password').value;
+      const newPassword     = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+
+      const availability = Array.from(document.querySelectorAll('.day-chip.active'))
+        .map(c => c.dataset.day).join(',');
+
+      // --- Validation ---
+      let valid = true;
+      if (!name) { setError('name-error', true); valid = false; }
+      if (!email || !/\S+@\S+\.\S+/.test(email)) { setError('email-error', true); valid = false; }
+
+      const wantsPasswordChange = newPassword || confirmPassword || currentPassword;
+      if (wantsPasswordChange) {
+        if (newPassword.length < 8) { setError('new-password-error', true); valid = false; }
+        if (newPassword !== confirmPassword) { setError('confirm-password-error', true); valid = false; }
+        if (!currentPassword) {
+          showToast('Enter your current password to change it', 'error');
+          valid = false;
+        }
+      }
+      if (!valid) return;
+
+      const saveBtn = document.getElementById('save-btn');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving…';
+
+      try {
+        // Update profile fields
+        const profileRes = await fetch(API_BASE + '/api/auth/me', {
+          method: 'PUT',
+          headers: authHeaders(),
+          body: JSON.stringify({ name, email, phone, major, bio, skills, availability })
+        });
+        if (!profileRes.ok) {
+          const err = await profileRes.json().catch(() => ({}));
+          throw new Error(err.error || 'Failed to save profile');
+        }
+        const profileData = await profileRes.json();
+        if (profileData.user) {
+          localStorage.setItem('user', JSON.stringify(profileData.user));
+        }
+
+        // Update password if requested
+        if (wantsPasswordChange) {
+          const pwRes = await fetch(API_BASE + '/api/auth/password', {
+            method: 'PUT',
+            headers: authHeaders(),
+            body: JSON.stringify({ currentPassword, newPassword })
+          });
+          if (!pwRes.ok) {
+            const err = await pwRes.json().catch(() => ({}));
+            throw new Error(err.error || 'Failed to update password');
+          }
+          document.getElementById('current-password').value = '';
+          document.getElementById('new-password').value = '';
+          document.getElementById('confirm-password').value = '';
+        }
+
+        // Reflect updates in the header
+        document.getElementById('display-name').textContent = name;
+        document.getElementById('display-email').textContent = email;
+        document.getElementById('nav-email').textContent = email;
+        document.getElementById('avatar').textContent = getInitials(name);
+
+        showToast('Profile updated successfully', 'success');
+      } catch (err) {
+        showToast(err.message || 'Something went wrong', 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Changes';
+      }
+    }
+
+    function handleCancel() {
+      if (confirm('Discard unsaved changes?')) loadProfile();
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'login.html';
+    }
+
+    // Init
+    loadProfile();
+  </script>
+</body>
+</html>
