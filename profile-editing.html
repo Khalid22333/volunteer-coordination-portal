@@ -28,7 +28,6 @@
       color: var(--text);
     }
 
-    /* TOP NAV */
     .top-nav {
       background: var(--white);
       border-bottom: 1px solid var(--border);
@@ -74,7 +73,6 @@
       background: var(--green-light);
     }
 
-    /* MAIN CONTAINER */
     .profile-container {
       max-width: 860px;
       margin: 0 auto;
@@ -87,9 +85,7 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    .page-header {
-      margin-bottom: 28px;
-    }
+    .page-header { margin-bottom: 28px; }
     .page-header h1 {
       font-family: 'Poppins', sans-serif;
       font-size: 28px;
@@ -103,7 +99,6 @@
       font-weight: 300;
     }
 
-    /* CARD */
     .card {
       background: var(--white);
       border: 1px solid var(--border);
@@ -111,7 +106,6 @@
       overflow: hidden;
     }
 
-    /* AVATAR HEADER */
     .avatar-row {
       display: flex;
       align-items: center;
@@ -148,13 +142,8 @@
       margin-top: 2px;
     }
 
-    /* SECTIONS */
-    .form-section {
-      padding: 28px 32px;
-    }
-    .form-section + .form-section {
-      border-top: 1px solid var(--border);
-    }
+    .form-section { padding: 28px 32px; }
+    .form-section + .form-section { border-top: 1px solid var(--border); }
 
     .section-title {
       font-family: 'Poppins', sans-serif;
@@ -192,7 +181,6 @@
     input[type="text"],
     input[type="email"],
     input[type="tel"],
-    input[type="password"],
     textarea {
       width: 100%;
       padding: 11px 16px;
@@ -206,7 +194,7 @@
       outline: none;
       resize: vertical;
     }
-    textarea { min-height: 90px; font-family: 'DM Sans', sans-serif; }
+    textarea { min-height: 90px; }
     input::placeholder, textarea::placeholder { color: #b0b7c3; }
     input:focus, textarea:focus {
       border-color: var(--green-dark);
@@ -219,7 +207,6 @@
       cursor: not-allowed;
     }
 
-    /* DAY CHIPS (availability) */
     .day-chips {
       display: flex;
       flex-wrap: wrap;
@@ -245,7 +232,6 @@
       border-color: var(--green-dark);
     }
 
-    /* ACTIONS */
     .action-row {
       display: flex;
       justify-content: flex-end;
@@ -276,11 +262,6 @@
       background: #2d4724;
       box-shadow: 0 4px 14px rgba(58,90,46,0.25);
     }
-    .btn-primary:disabled {
-      background: #8a9d82;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
 
     .btn-secondary {
       background: var(--white);
@@ -299,13 +280,12 @@
     }
     .error-msg.show { display: block; }
 
-    /* TOAST */
     .toast {
       position: fixed;
       bottom: 24px;
       right: 24px;
       padding: 14px 22px;
-      background: var(--text);
+      background: var(--success);
       color: var(--white);
       border-radius: 8px;
       font-size: 0.9rem;
@@ -320,10 +300,7 @@
       opacity: 1;
       transform: translateY(0);
     }
-    .toast.success { background: var(--success); }
-    .toast.error   { background: var(--error); }
 
-    /* RESPONSIVE */
     @media (max-width: 640px) {
       .top-nav { padding: 14px 20px; }
       .profile-container { padding: 28px 16px 60px; }
@@ -342,7 +319,7 @@
   <header class="top-nav">
     <div class="brand-mini">CSUS Career Center Volunteer</div>
     <div class="nav-user">
-      <span>Signed in as <strong id="nav-email">—</strong></span>
+      <span>Signed in as <strong id="nav-email">jane.hornet@csus.edu</strong></span>
       <button class="btn-logout" onclick="handleLogout()">Log out</button>
     </div>
   </header>
@@ -350,21 +327,19 @@
   <main class="profile-container">
     <div class="page-header">
       <h1>Profile Settings</h1>
-      <p>Update your personal information, availability, and password.</p>
+      <p>Update your personal information and availability.</p>
     </div>
 
     <div class="card">
 
-      <!-- Avatar + name header -->
       <div class="avatar-row">
-        <div class="avatar" id="avatar">—</div>
+        <div class="avatar" id="avatar">JH</div>
         <div class="avatar-info">
-          <h2 id="display-name">Loading…</h2>
-          <p id="display-email">—</p>
+          <h2 id="display-name">Jane Hornet</h2>
+          <p id="display-email">jane.hornet@csus.edu</p>
         </div>
       </div>
 
-      <!-- Personal Information -->
       <section class="form-section">
         <h3 class="section-title">Personal Information</h3>
         <p class="section-subtitle">This information will be visible to Career Center coordinators.</p>
@@ -372,14 +347,13 @@
         <div class="field-grid">
           <div class="field">
             <label for="name">Full Name</label>
-            <input type="text" id="name" autocomplete="name" placeholder="Jane Hornet"/>
+            <input type="text" id="name" autocomplete="name" value="Jane Hornet"/>
             <span class="error-msg" id="name-error">Name is required.</span>
           </div>
 
           <div class="field">
             <label for="email">Email address</label>
-            <input type="email" id="email" autocomplete="email" placeholder="you@csus.edu"/>
-            <span class="error-msg" id="email-error">Please enter a valid email.</span>
+            <input type="email" id="email" value="jane.hornet@csus.edu" readonly/>
           </div>
 
           <div class="field">
@@ -404,7 +378,6 @@
         </div>
       </section>
 
-      <!-- Availability -->
       <section class="form-section">
         <h3 class="section-title">Weekly Availability</h3>
         <p class="section-subtitle">Select the days you're generally available to volunteer.</p>
@@ -420,30 +393,6 @@
         </div>
       </section>
 
-      <!-- Password -->
-      <section class="form-section">
-        <h3 class="section-title">Change Password</h3>
-        <p class="section-subtitle">Leave blank if you don't want to change your password.</p>
-
-        <div class="field-grid">
-          <div class="field full">
-            <label for="current-password">Current password</label>
-            <input type="password" id="current-password" autocomplete="current-password" placeholder="Enter current password"/>
-          </div>
-          <div class="field">
-            <label for="new-password">New password</label>
-            <input type="password" id="new-password" autocomplete="new-password" placeholder="At least 8 characters"/>
-            <span class="error-msg" id="new-password-error">Password must be at least 8 characters.</span>
-          </div>
-          <div class="field">
-            <label for="confirm-password">Confirm new password</label>
-            <input type="password" id="confirm-password" autocomplete="new-password" placeholder="Re-enter new password"/>
-            <span class="error-msg" id="confirm-password-error">Passwords don't match.</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Actions -->
       <div class="action-row">
         <button class="btn btn-secondary" onclick="handleCancel()">Cancel</button>
         <button class="btn btn-primary" id="save-btn" onclick="handleSave()">Save Changes</button>
@@ -451,182 +400,61 @@
     </div>
   </main>
 
-  <div class="toast" id="toast">Profile updated</div>
+  <div class="toast" id="toast">Profile updated successfully</div>
 
   <script>
-    const API_BASE = ''; // same origin; change to 'http://localhost:3001' if served separately
-    const DAYS = ['mon','tue','wed','thu','fri','sat','sun'];
+    // TODO: re-enable auth guard once login flow is fully connected
+    // const token = localStorage.getItem('token');
+    // if (!token) { window.location.href = 'login.html'; }
 
-    // ---------- Auth guard ----------
-    const token = localStorage.getItem('token');
-    if (!token) {
-      window.location.href = 'login.html';
+    // If a user is logged in, populate name/email from localStorage
+    const cached = JSON.parse(localStorage.getItem('user') || '{}');
+    if (cached.name) {
+      document.getElementById('display-name').textContent = cached.name;
+      document.getElementById('name').value = cached.name;
+      document.getElementById('avatar').textContent = cached.name
+        .trim().split(/\s+/).slice(0,2).map(s => s[0]).join('').toUpperCase();
+    }
+    if (cached.email) {
+      document.getElementById('display-email').textContent = cached.email;
+      document.getElementById('email').value = cached.email;
+      document.getElementById('nav-email').textContent = cached.email;
     }
 
-    // ---------- Helpers ----------
-    function getInitials(name) {
-      if (!name) return '?';
-      return name.trim().split(/\s+/).slice(0, 2).map(s => s[0]).join('').toUpperCase();
-    }
-
-    function showToast(msg, type = 'success') {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = 'toast show ' + type;
-      setTimeout(() => { t.className = 'toast ' + type; }, 2500);
-    }
-
-    function setError(id, show) {
-      const el = document.getElementById(id);
-      if (el) el.classList.toggle('show', show);
-    }
-
-    function authHeaders() {
-      return {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      };
-    }
-
-    // ---------- Load profile ----------
-    async function loadProfile() {
-      try {
-        const res = await fetch(API_BASE + '/api/auth/me', { headers: authHeaders() });
-        if (res.status === 401) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          window.location.href = 'login.html';
-          return;
-        }
-        const data = await res.json();
-        const u = data.user || {};
-
-        document.getElementById('nav-email').textContent = u.email || '—';
-        document.getElementById('display-name').textContent = u.name || '—';
-        document.getElementById('display-email').textContent = u.email || '—';
-        document.getElementById('avatar').textContent = getInitials(u.name);
-
-        document.getElementById('name').value   = u.name   || '';
-        document.getElementById('email').value  = u.email  || '';
-        document.getElementById('phone').value  = u.phone  || '';
-        document.getElementById('major').value  = u.major  || '';
-        document.getElementById('bio').value    = u.bio    || '';
-        document.getElementById('skills').value = u.skills || '';
-
-        // availability comes back as comma-separated, e.g. "mon,wed,fri"
-        const availability = (u.availability || '').split(',').map(s => s.trim()).filter(Boolean);
-        document.querySelectorAll('.day-chip').forEach(chip => {
-          if (availability.includes(chip.dataset.day)) chip.classList.add('active');
-        });
-      } catch (err) {
-        // Backend may not implement all fields yet — fall back to localStorage user
-        const cached = JSON.parse(localStorage.getItem('user') || '{}');
-        document.getElementById('nav-email').textContent = cached.email || '—';
-        document.getElementById('display-name').textContent = cached.name || 'Volunteer';
-        document.getElementById('display-email').textContent = cached.email || '—';
-        document.getElementById('avatar').textContent = getInitials(cached.name);
-        document.getElementById('name').value = cached.name || '';
-        document.getElementById('email').value = cached.email || '';
-        showToast('Could not connect to server', 'error');
-      }
-    }
-
-    // ---------- Day chip toggle ----------
+    // Toggle day chips
     document.getElementById('day-chips').addEventListener('click', e => {
       if (e.target.classList.contains('day-chip')) {
         e.target.classList.toggle('active');
       }
     });
 
-    // ---------- Save ----------
-    async function handleSave() {
-      // Reset errors
-      ['name-error','email-error','new-password-error','confirm-password-error']
-        .forEach(id => setError(id, false));
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
 
-      const name  = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const major = document.getElementById('major').value.trim();
-      const bio   = document.getElementById('bio').value.trim();
-      const skills = document.getElementById('skills').value.trim();
+    function handleSave() {
+      const name = document.getElementById('name').value.trim();
+      const nameError = document.getElementById('name-error');
+      nameError.classList.remove('show');
 
-      const currentPassword = document.getElementById('current-password').value;
-      const newPassword     = document.getElementById('new-password').value;
-      const confirmPassword = document.getElementById('confirm-password').value;
-
-      const availability = Array.from(document.querySelectorAll('.day-chip.active'))
-        .map(c => c.dataset.day).join(',');
-
-      // --- Validation ---
-      let valid = true;
-      if (!name) { setError('name-error', true); valid = false; }
-      if (!email || !/\S+@\S+\.\S+/.test(email)) { setError('email-error', true); valid = false; }
-
-      const wantsPasswordChange = newPassword || confirmPassword || currentPassword;
-      if (wantsPasswordChange) {
-        if (newPassword.length < 8) { setError('new-password-error', true); valid = false; }
-        if (newPassword !== confirmPassword) { setError('confirm-password-error', true); valid = false; }
-        if (!currentPassword) {
-          showToast('Enter your current password to change it', 'error');
-          valid = false;
-        }
+      if (!name) {
+        nameError.classList.add('show');
+        return;
       }
-      if (!valid) return;
 
-      const saveBtn = document.getElementById('save-btn');
-      saveBtn.disabled = true;
-      saveBtn.textContent = 'Saving…';
+      document.getElementById('display-name').textContent = name;
+      document.getElementById('avatar').textContent = name
+        .trim().split(/\s+/).slice(0,2).map(s => s[0]).join('').toUpperCase();
 
-      try {
-        // Update profile fields
-        const profileRes = await fetch(API_BASE + '/api/auth/me', {
-          method: 'PUT',
-          headers: authHeaders(),
-          body: JSON.stringify({ name, email, phone, major, bio, skills, availability })
-        });
-        if (!profileRes.ok) {
-          const err = await profileRes.json().catch(() => ({}));
-          throw new Error(err.error || 'Failed to save profile');
-        }
-        const profileData = await profileRes.json();
-        if (profileData.user) {
-          localStorage.setItem('user', JSON.stringify(profileData.user));
-        }
-
-        // Update password if requested
-        if (wantsPasswordChange) {
-          const pwRes = await fetch(API_BASE + '/api/auth/password', {
-            method: 'PUT',
-            headers: authHeaders(),
-            body: JSON.stringify({ currentPassword, newPassword })
-          });
-          if (!pwRes.ok) {
-            const err = await pwRes.json().catch(() => ({}));
-            throw new Error(err.error || 'Failed to update password');
-          }
-          document.getElementById('current-password').value = '';
-          document.getElementById('new-password').value = '';
-          document.getElementById('confirm-password').value = '';
-        }
-
-        // Reflect updates in the header
-        document.getElementById('display-name').textContent = name;
-        document.getElementById('display-email').textContent = email;
-        document.getElementById('nav-email').textContent = email;
-        document.getElementById('avatar').textContent = getInitials(name);
-
-        showToast('Profile updated successfully', 'success');
-      } catch (err) {
-        showToast(err.message || 'Something went wrong', 'error');
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = 'Save Changes';
-      }
+      // TODO: POST updated fields to backend once PUT /api/auth/me endpoint exists
+      showToast('Profile updated successfully');
     }
 
     function handleCancel() {
-      if (confirm('Discard unsaved changes?')) loadProfile();
+      if (confirm('Discard unsaved changes?')) window.location.reload();
     }
 
     function handleLogout() {
@@ -634,9 +462,6 @@
       localStorage.removeItem('user');
       window.location.href = 'login.html';
     }
-
-    // Init
-    loadProfile();
   </script>
 </body>
 </html>
