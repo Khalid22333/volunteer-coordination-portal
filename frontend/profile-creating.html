@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CSUS Career Center Volunteer – Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark: #3a5a2e;
+      --green-mid: #4a7a3a;
+      --green-light: #f0f4ee;
+      --text: #1a1a1a;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --white: #ffffff;
+      --error: #dc2626;
+      --success: #16a34a;
+      --bg: #fafaf9;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .top-nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-mini {
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .nav-user strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-logout:hover {
+      border-color: var(--green-dark);
+      background: var(--green-light);
+    }
+
+    .profile-container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .page-header p {
+      margin-top: 6px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .avatar-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 28px 32px;
+      background: linear-gradient(135deg, var(--green-light) 0%, #e6ede2 100%);
+    }
+
+    .avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--green-dark);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      flex-shrink: 0;
+    }
+
+    .avatar-info h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .avatar-info p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .form-section { padding: 28px 32px; }
+    .form-section + .form-section { border-top: 1px solid var(--border); }
+
+    .section-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .section-subtitle {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 300;
+      margin-bottom: 20px;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea {
+      width: 100%;
+      padding: 11px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      resize: vertical;
+    }
+    textarea { min-height: 90px; }
+    input::placeholder, textarea::placeholder { color: #b0b7c3; }
+    input:focus, textarea:focus {
+      border-color: var(--green-dark);
+      box-shadow: 0 0 0 3px rgba(58, 90, 46, 0.1);
+    }
+
+    input[readonly] {
+      background: #f5f5f4;
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+
+    .day-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .day-chip {
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .day-chip:hover { border-color: var(--green-mid); }
+    .day-chip.active {
+      background: var(--green-dark);
+      color: var(--white);
+      border-color: var(--green-dark);
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 20px 32px;
+      border-top: 1px solid var(--border);
+      background: #fafaf9;
+    }
+
+    .btn {
+      padding: 11px 22px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s, border-color 0.2s;
+      letter-spacing: 0.01em;
+    }
+    .btn:active { transform: scale(0.99); }
+
+    .btn-primary {
+      background: var(--green-dark);
+      color: var(--white);
+    }
+    .btn-primary:hover {
+      background: #2d4724;
+      box-shadow: 0 4px 14px rgba(58,90,46,0.25);
+    }
+
+    .btn-secondary {
+      background: var(--white);
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover {
+      border-color: var(--green-dark);
+      background: var(--green-light);
+    }
+
+    .error-msg {
+      font-size: 0.8rem;
+      color: var(--error);
+      display: none;
+    }
+    .error-msg.show { display: block; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 14px 22px;
+      background: var(--success);
+      color: var(--white);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      z-index: 100;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 640px) {
+      .top-nav { padding: 14px 20px; }
+      .profile-container { padding: 28px 16px 60px; }
+      .avatar-row { padding: 22px 20px; gap: 14px; }
+      .avatar { width: 56px; height: 56px; font-size: 20px; }
+      .form-section { padding: 22px 20px; }
+      .action-row { padding: 16px 20px; flex-direction: column-reverse; }
+      .action-row .btn { width: 100%; }
+      .field-grid { grid-template-columns: 1fr; }
+      .nav-user span:first-child { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-nav">
+    <div class="brand-mini">CSUS Career Center Volunteer</div>
+    <div class="nav-user">
+      <span>Signed in as <strong id="nav-email">jane.hornet@csus.edu</strong></span>
+      <button class="btn-logout" onclick="handleLogout()">Log out</button>
+    </div>
+  </header>
+
+  <main class="profile-container">
+    <div class="page-header">
+      <h1>Profile Settings</h1>
+      <p>Update your personal information and availability.</p>
+    </div>
+
+    <div class="card">
+
+      <div class="avatar-row">
+        <div class="avatar" id="avatar">JH</div>
+        <div class="avatar-info">
+          <h2 id="display-name">Jane Hornet</h2>
+          <p id="display-email">jane.hornet@csus.edu</p>
+        </div>
+      </div>
+
+      <section class="form-section">
+        <h3 class="section-title">Personal Information</h3>
+        <p class="section-subtitle">This information will be visible to Career Center coordinators.</p>
+
+        <div class="field-grid">
+          <div class="field">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" autocomplete="name" value="Jane Hornet"/>
+            <span class="error-msg" id="name-error">Name is required.</span>
+          </div>
+
+          <div class="field">
+            <label for="email">Email address</label>
+            <input type="email" id="email" value="jane.hornet@csus.edu" readonly/>
+          </div>
+
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" autocomplete="tel" placeholder="(916) 555-0123"/>
+          </div>
+
+          <div class="field">
+            <label for="major">Major / Program</label>
+            <input type="text" id="major" placeholder="Computer Science"/>
+          </div>
+
+          <div class="field full">
+            <label for="bio">About you</label>
+            <textarea id="bio" placeholder="Tell us a bit about yourself and why you want to volunteer."></textarea>
+          </div>
+
+          <div class="field full">
+            <label for="skills">Skills & Interests</label>
+            <input type="text" id="skills" placeholder="e.g. tutoring, event setup, social media, tabling"/>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h3 class="section-title">Weekly Availability</h3>
+        <p class="section-subtitle">Select the days you're generally available to volunteer.</p>
+
+        <div class="day-chips" id="day-chips">
+          <div class="day-chip" data-day="mon">Mon</div>
+          <div class="day-chip" data-day="tue">Tue</div>
+          <div class="day-chip" data-day="wed">Wed</div>
+          <div class="day-chip" data-day="thu">Thu</div>
+          <div class="day-chip" data-day="fri">Fri</div>
+          <div class="day-chip" data-day="sat">Sat</div>
+          <div class="day-chip" data-day="sun">Sun</div>
+        </div>
+      </section>
+
+      <div class="action-row">
+        <button class="btn btn-secondary" onclick="handleCancel()">Cancel</button>
+        <button class="btn btn-primary" id="save-btn" onclick="handleSave()">Save Changes</button>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast">Profile updated successfully</div>
+
+  <script>
+    // TODO: re-enable auth guard once login flow is fully connected
+    // const token = localStorage.getItem('token');
+    // if (!token) { window.location.href = 'login.html'; }
+
+    // If a user is logged in, populate name/email from localStorage
+    const cached = JSON.parse(localStorage.getItem('user') || '{}');
+    if (cached.name) {
+      document.getElementById('display-name').textContent = cached.name;
+      document.getElementById('name').value = cached.name;
+      document.getElementById('avatar').textContent = cached.name
+        .trim().split(/\s+/).slice(0,2).map(s => s[0]).join('').toUpperCase();
+    }
+    if (cached.email) {
+      document.getElementById('display-email').textContent = cached.email;
+      document.getElementById('email').value = cached.email;
+      document.getElementById('nav-email').textContent = cached.email;
+    }
+
+    // Toggle day chips
+    document.getElementById('day-chips').addEventListener('click', e => {
+      if (e.target.classList.contains('day-chip')) {
+        e.target.classList.toggle('active');
+      }
+    });
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function handleSave() {
+      const name = document.getElementById('name').value.trim();
+      const nameError = document.getElementById('name-error');
+      nameError.classList.remove('show');
+
+      if (!name) {
+        nameError.classList.add('show');
+        return;
+      }
+
+      document.getElementById('display-name').textContent = name;
+      document.getElementById('avatar').textContent = name
+        .trim().split(/\s+/).slice(0,2).map(s => s[0]).join('').toUpperCase();
+
+      // TODO: POST updated fields to backend once PUT /api/auth/me endpoint exists
+      showToast('Profile updated successfully');
+    }
+
+    function handleCancel() {
+      if (confirm('Discard unsaved changes?')) window.location.reload();
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
