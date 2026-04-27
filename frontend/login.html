@@ -288,22 +288,6 @@
       </div>
 
       <button class="btn btn-primary" onclick="handleLogin()">Login</button>
-      <button class="btn btn-admin" onclick="handleAdminLogin()">Admin Login</button>
-
-      <div class="divider">or</div>
-
-      <div class="social-row">
-        <button class="btn-social">
-          <!-- Google icon -->
-          <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18L12.048 13.56c-.806.54-1.836.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
-          Sign in with Google
-        </button>
-        <button class="btn-social">
-          <!-- Apple icon -->
-          <svg width="16" height="18" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 376.6 0 248 0 124.8c0-68.9 13.6-136.8 44.2-196.8A437.07 437.07 0 0 1 155.4 1.7C196.3-5.4 234.7 0 270.2 12.3a437.57 437.57 0 0 1 111.6 60.7c60.2-40.2 134.9-64 217.2-64 70.9 0 144.8 19.1 198.9 56.9.6.4 1.3.8 1.9 1.2z"/></svg>
-          Sign in with Apple
-        </button>
-      </div>
 
       <p class="signup-prompt">Don't have an account? <a href="create-account.html">Sign Up</a></p>
     </div>
@@ -319,6 +303,7 @@
     </div>
   </div>
 
+  <script src="auth.js"></script>
   <script>
     function handleLogin() {
       const email = document.getElementById('email');
@@ -362,34 +347,9 @@
         // Store JWT for future authenticated requests
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        window.location.href = '/landing.html';
-      })
-      .catch(() => alert('Network error. Please try again.'));
-    }
-
-    function handleAdminLogin() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      if (!email || !password) {
-        alert('Please enter your email and password.');
-        return;
-      }
-
-      fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.error) {
-          alert('Admin login failed: ' + data.error);
-          return;
-        }
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        window.location.href = '/admin.html';
+        // Send the user back to whatever protected page bounced them here
+        // (or the landing page if they came directly to login).
+        window.location.href = consumeRedirectAfterLogin();
       })
       .catch(() => alert('Network error. Please try again.'));
     }
