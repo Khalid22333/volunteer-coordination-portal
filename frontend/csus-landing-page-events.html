@@ -86,6 +86,45 @@
     border: 2px solid rgba(255, 255, 255, 0.25);
   }
 
+  /* Avatar styled as a clickable button. Resets default <button> chrome
+     so it looks identical to the original .avatar div, then layers in
+     a hover/focus affordance to make it feel interactive. */
+  .avatar-btn {
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+  }
+  .avatar-btn:hover {
+    transform: scale(1.04);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+  .avatar-btn:focus-visible {
+    outline: 2px solid #f5c518;
+    outline-offset: 2px;
+  }
+
+  /* Default silhouette icon shown when the user has no profile photo.
+     Sits inside the .avatar circle and is centered automatically by
+     the parent's flex layout. */
+  .avatar-silhouette {
+    width: 70%;
+    height: 70%;
+    fill: #fff;
+    /* Nudge down a touch so the head/shoulders read as centered visually
+       (the SVG has whitespace at the bottom for the shoulder cutoff). */
+    transform: translateY(2px);
+  }
+
+  /* Custom photo img — fills the circle when a profile photo is set.
+     Hidden by default; shown by JS when user.photoUrl exists. */
+  .avatar-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
   /* ── Body ── */
   .body {
     display: flex;
@@ -433,7 +472,22 @@
       <span class="s sa">&#9733;</span>
     </div>
 
-   <div class="avatar"><img src="assets/images/Lady-in-Black.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div> <!-- replace actual image URL of the USERS PFP -->
+   <!--
+     Header avatar button. Behavior:
+       - Logged in:  navigates to the profile customization page.
+       - Logged out: bounces to login (and saves where to come back to).
+     Visuals:
+       - Default: classic head-and-shoulders silhouette (svg.avatar-silhouette).
+       - When a user has uploaded a photo, JS sets img.avatar-photo's src
+         to user.photoUrl, hides the silhouette, and shows the img instead.
+   -->
+   <button class="avatar avatar-btn" id="header-avatar" type="button" onclick="handleAvatarClick()" aria-label="Profile">
+     <svg class="avatar-silhouette" viewBox="0 0 24 24" aria-hidden="true">
+       <circle cx="12" cy="9" r="4"/>
+       <path d="M4 22c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+     </svg>
+     <img class="avatar-photo" id="header-avatar-photo" alt="" style="display:none"/>
+   </button>
   </div>
 
   <!-- Body -->
@@ -444,7 +498,7 @@
       <div class="sidebar-top">
         <div class="dash-title">Dashboard</div>
 
-        <div class="nav-item">
+        <div class="nav-item active">
           <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
             <path d="M9 21V12h6v9" />
@@ -452,6 +506,12 @@
           Home
         </div>
 
+        <!--
+          The Messaging, My Events, and Calendar nav items are temporarily
+          hidden until those pages exist. Re-enable each one by removing the
+          surrounding HTML comment when the corresponding page is built.
+        -->
+        <!--
         <div class="nav-item">
           <svg class="nav-icon" viewBox="0 0 24 24">
             <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
@@ -475,9 +535,24 @@
           </svg>
           Calendar
         </div>
+        -->
+
+        <!-- The Profile entry point lives in the header avatar (top-right)
+             instead of the sidebar. See #header-avatar. -->
       </div>
 
-     <div class="logout-row" onclick="handleLogout()">
+      <!-- Login row: only visible when logged out. -->
+      <div class="logout-row" id="login-row" style="display:none" onclick="window.location.href='login.html'">
+        <svg class="nav-icon" viewBox="0 0 24 24">
+          <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" />
+          <polyline points="10 17 15 12 10 7" />
+          <line x1="15" y1="12" x2="3" y2="12" />
+        </svg>
+        Log In
+      </div>
+
+      <!-- Logout row: only visible when logged in. -->
+      <div class="logout-row" id="logout-row" style="display:none" onclick="handleLogout()">
         <svg class="nav-icon" viewBox="0 0 24 24">
           <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
           <polyline points="16 17 21 12 16 7" />
@@ -523,19 +598,24 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="auth.js"></script>
 <script>
   /**
    * Event data — open positions/events available for sign-up.
-   * Fields: id, month, day, timeRange, name. You can replace the image field values with actual image URLs or paths as needed.
+   *
+   * Loaded at runtime from GET /api/events (see server/src/routes/events.js).
+   * Each row's shape matches what createCard() expects:
+   *   { id, name, month, day, timeRange, image }
+   *
+   * The admin side of the app will eventually write into the same `events`
+   * table this endpoint reads from, so this page won't need to change when
+   * that lands — only the seed source changes (script → admin UI).
+   *
+   * Fallback: if the fetch fails (e.g. opened from the filesystem during
+   * design work, or the server is down), the grid renders empty instead of
+   * crashing the page. See loadEvents() below.
    */
-  const events = [
-  { id: 1, month: "Feb",   day: 10, timeRange: "2:00pm - 5:00pm",  name: "Bingo & Trivia Nights",  image: "assets/images/bingoNight.jpg" },
-  { id: 2, month: "April", day: 23, timeRange: "12:00pm - 5:00pm", name: "Career Fair",            image: "assets/images/careerFair.png" },
-  { id: 3, month: "April", day: 30, timeRange: "10:00pm - 5:00pm", name: "Academic Tutoring",      image: "assets/images/tutorting.png" },
-  { id: 4, month: "MAY",   day: 12, timeRange: "1:00pm - 6:00pm",  name: "Neighborhood Clean-up",  image: "assets/images/communityCleanup.webp" },
-  { id: 5, month: "MAY",   day: 16, timeRange: "12:30pm - 3:00pm", name: "Resume Workshop",        image: "assets/images/resumeWorkshop.png" },
-  { id: 6, month: "MAY",   day: 22, timeRange: "1:00pm - 4:00pm",  name: "Food Bank",              image: "assets/images/foodBank.jpg" },
-];
+  let events = [];
 
   /** Tracks which event IDs the user has applied to this session. */
   const appliedSet = new Set();
@@ -553,11 +633,14 @@
   }
 
   /**
-   * updateStats — refreshes the stats bar counters after an apply action.
+   * updateStats — refreshes the stats bar counters.
+   * Called on page load (after events arrive) and after every apply action,
+   * so the displayed totals always match the current events array.
    */
   function updateStats() {
+    document.getElementById("totalStat").textContent   = events.length;
     document.getElementById("appliedStat").textContent = appliedSet.size;
-    document.getElementById("openStat").textContent = events.length - appliedSet.size;
+    document.getElementById("openStat").textContent    = events.length - appliedSet.size;
   }
 
   /**
@@ -569,6 +652,11 @@
    * @param {MouseEvent} e - Click event for ripple positioning.
    */
   function handleApply(id, btn, name, e) {
+    // Auth gate: applying requires an account. If not logged in, requireLogin()
+    // stashes this page and redirects to login. We early-return so nothing
+    // else runs (the page is unloading anyway).
+    if (!requireLogin()) return;
+
     if (appliedSet.has(id)) return;
     appliedSet.add(id);
 
@@ -670,22 +758,108 @@ lbl.style.cssText = "width:100%;height:100%;object-fit:cover;position:absolute;i
     card.append(img, meta, btnApply);
     return card;
   }
-/**
- * handleLogout — clears the user session and redirects to the login page.
- */
-
-// Function to handle logout action, redirecting the user to the login page
- function handleLogout() {
-  window.location.href = "login.html"; 
-}
   /**
-   * renderGrid — renders all event cards into the grid on page load.
+   * handleLogout — clears the user session and lands the user back here
+   * as an anonymous visitor (the landing page is public).
+   */
+  function handleLogout() {
+    // logout() clears localStorage and redirects. Default destination is
+    // this same page, so the user effectively "logs out in place".
+    logout('csus-landing-page-events.html');
+  }
+
+  /**
+   * syncSidebar — shows/hides the Login and Logout rows so the sidebar
+   * matches the current auth state. Called once on page load.
+   * (The Profile entry point lives on the header avatar, not the sidebar.)
+   */
+  function syncSidebar() {
+    const loggedIn = isLoggedIn();
+    document.getElementById('login-row').style.display  = loggedIn ? 'none' : 'flex';
+    document.getElementById('logout-row').style.display = loggedIn ? 'flex' : 'none';
+  }
+
+  /**
+   * handleAvatarClick — top-right avatar is the entry point to the profile
+   * customization page. If the user isn't logged in, we bounce them through
+   * login first (and remember to come back here afterward).
+   */
+  function handleAvatarClick() {
+    if (isLoggedIn()) {
+      window.location.href = 'profile-creating.html';
+      return;
+    }
+    // Not logged in: stash this page so login knows to send us back here,
+    // then redirect to login. Same pattern as requireLogin() uses.
+    localStorage.setItem('redirectAfterLogin', 'csus-landing-page-events.html');
+    window.location.href = 'login.html';
+  }
+
+  /**
+   * syncAvatar — picks what to show inside the header avatar circle.
+   *   - If the logged-in user has a profile photo URL on their user object
+   *     (user.photoUrl), show that image.
+   *   - Otherwise show the default silhouette.
+   *
+   * The user object lives in localStorage and is set at login/signup time.
+   * When the profile customization page eventually supports photo upload,
+   * it should write the new URL to user.photoUrl in localStorage and this
+   * page will pick it up automatically on next load. No more changes needed
+   * here.
+   */
+  function syncAvatar() {
+    const photo = document.getElementById('header-avatar-photo');
+    const silhouette = document.querySelector('#header-avatar .avatar-silhouette');
+    const user = getUser();
+    if (user && user.photoUrl) {
+      photo.src = user.photoUrl;
+      photo.style.display = 'block';
+      silhouette.style.display = 'none';
+    } else {
+      photo.style.display = 'none';
+      silhouette.style.display = 'block';
+    }
+  }
+
+  /**
+   * renderGrid — paints the current `events` array into #eventsGrid.
+   * Idempotent: clears the grid first so it can be called again after a
+   * future refresh without stacking duplicate cards.
    */
   function renderGrid() {
     const grid = document.getElementById("eventsGrid");
+    grid.innerHTML = "";
     events.forEach(ev => grid.appendChild(createCard(ev)));
     updateStats();
   }
 
-  renderGrid();
+  /**
+   * loadEvents — pulls the event list from the backend and renders it.
+   *
+   * In design-preview mode (page opened via file://) there's no API to call,
+   * so we leave the grid empty and skip the fetch. To see real events, run
+   * the server (npm start) and visit http://localhost:3001/.
+   */
+  async function loadEvents() {
+    if (window.location.protocol === 'file:') {
+      // Design preview — no backend. Render empty and bail.
+      renderGrid();
+      return;
+    }
+    try {
+      const res = await fetch('/api/events');
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      events = data.events || [];
+      renderGrid();
+    } catch (err) {
+      console.error('Failed to load events:', err);
+      showToast('Could not load events. Please refresh.');
+      renderGrid(); // render empty grid so stats show 0/0/0
+    }
+  }
+
+  syncSidebar();
+  syncAvatar();
+  loadEvents();
 </script>

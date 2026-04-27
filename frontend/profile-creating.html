@@ -4,10 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CSUS Career Center Volunteer – Profile</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+    /* CSS variables for the form palette. Kept separate so the shell
+       (header + sidebar) can use the landing page's literal colors,
+       and the form can use named tokens. */
     :root {
       --green-dark: #3a5a2e;
       --green-mid: #4a7a3a;
@@ -18,103 +19,199 @@
       --white: #ffffff;
       --error: #dc2626;
       --success: #16a34a;
-      --bg: #fafaf9;
     }
 
-    body {
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; }
+
+    /* ── Shell (mirrors csus-landing-page-events.html) ────────────────── */
+    .shell {
       font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
+      background: #f0f0f0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 0.5px solid #ccc;
+      min-height: 700px;
     }
 
-    .top-nav {
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 40px;
+    /* ── Header (mirrors landing page) ────────────────────────────────── */
+    .header {
+      background: #1b3d1b;
+      height: 76px;
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
+      padding: 0 20px;
+      position: relative;
+      overflow: hidden;
     }
-
-    .brand-mini {
-      font-family: 'Poppins', sans-serif;
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text);
+    .logo {
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.2;
+      color: #f5c518;
+      z-index: 2;
+      position: relative;
     }
-
-    .nav-user {
+    .stars-bg {
+      position: absolute;
+      inset: 0;
       display: flex;
       align-items: center;
-      gap: 16px;
-      font-size: 0.9rem;
-      color: var(--muted);
+      gap: 0;
+      justify-content: center;
+      pointer-events: none;
+      padding: 0 120px;
     }
+    .s  { color: #f5c518; display: inline-block; line-height: 1; }
+    .sa { font-size: 28px; margin: 0 6px; }
+    .sb { font-size: 18px; margin: 0 5px; }
+    .sc { font-size: 13px; margin: 0 4px; }
 
-    .nav-user strong {
-      color: var(--text);
-      font-weight: 500;
-    }
-
-    .btn-logout {
-      background: transparent;
-      border: 1px solid var(--border);
-      padding: 7px 14px;
-      border-radius: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
-      color: var(--text);
+    /* Header avatar button — same look + behavior as the landing page.
+       Same hover scale, same focus ring, same silhouette/photo swap. */
+    .header-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #888;
+      z-index: 2;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      padding: 0;
       cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
+      transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
     }
-    .btn-logout:hover {
-      border-color: var(--green-dark);
-      background: var(--green-light);
+    .header-avatar:hover {
+      transform: scale(1.04);
+      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+    .header-avatar:focus-visible {
+      outline: 2px solid #f5c518;
+      outline-offset: 2px;
+    }
+    .avatar-silhouette {
+      width: 70%;
+      height: 70%;
+      fill: #fff;
+      transform: translateY(2px);
+    }
+    .avatar-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
     }
 
-    .profile-container {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 48px 32px 80px;
-      animation: fadeUp 0.5s ease both;
-    }
+    /* ── Body / Sidebar / Main (mirrors landing page) ─────────────────── */
+    .body { display: flex; min-height: 620px; }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .sidebar {
+      width: 165px;
+      background: #fff;
+      border-right: 0.5px solid #ddd;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18px 0 0;
+      flex-shrink: 0;
     }
-
-    .page-header { margin-bottom: 28px; }
-    .page-header h1 {
-      font-family: 'Poppins', sans-serif;
-      font-size: 28px;
+    .dash-title {
+      font-size: 19px;
       font-weight: 600;
-      color: var(--text);
+      color: #111;
+      padding: 0 16px 14px;
     }
-    .page-header p {
-      margin-top: 6px;
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 16px;
+      font-size: 13.5px;
+      color: #555;
+      cursor: pointer;
+      transition: background 0.13s;
+    }
+    .nav-item:hover { background: #f5f5f5; }
+    .nav-item.active { color: #111; font-weight: 500; }
+    .nav-icon {
+      width: 19px;
+      height: 19px;
+      flex-shrink: 0;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .logout-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      font-size: 13.5px;
+      color: #555;
+      cursor: pointer;
+      border-top: 0.5px solid #eee;
+      transition: background 0.13s;
+    }
+    .logout-row:hover { background: #f5f5f5; }
+
+    .main {
+      flex: 1;
+      background: #fff;
+      padding: 22px 24px 22px;
+      display: flex;
+      flex-direction: column;
+    }
+    .main-inner {
+      background: #fff;
+      border-radius: 8px;
+      border: 0.5px solid #e0e0e0;
+      flex: 1;
+      padding: 22px 22px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 18px;
+    }
+    .page-title {
+      font-size: 21px;
+      font-weight: 600;
+      color: #111;
+    }
+    .page-subtitle {
       font-size: 0.95rem;
       color: var(--muted);
       font-weight: 300;
     }
 
-    .card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-    }
+    /* ── Profile form (lives inside .main-inner where the events grid
+       lives on the landing page) ───────────────────────────────────────── */
+    .profile-card { display: flex; flex-direction: column; }
 
-    .avatar-row {
+    .pic-row {
       display: flex;
       align-items: center;
       gap: 20px;
-      padding: 28px 32px;
-      background: linear-gradient(135deg, var(--green-light) 0%, #e6ede2 100%);
+      padding: 6px 0 22px;
+      border-bottom: 1px solid var(--border);
     }
-
-    .avatar {
+    /* Renamed from .avatar to .profile-pic so it doesn't collide with the
+       header's .header-avatar styling. This is the big circle inside the
+       form that shows the user's initials (or, eventually, their uploaded
+       profile photo). */
+    .profile-pic {
       width: 72px;
       height: 72px;
       border-radius: 50%;
@@ -129,34 +226,38 @@
       letter-spacing: 0.02em;
       flex-shrink: 0;
     }
-
-    .avatar-info h2 {
+    .pic-info h2 {
       font-family: 'Poppins', sans-serif;
       font-size: 18px;
       font-weight: 600;
       color: var(--text);
     }
-    .avatar-info p {
+    .pic-info p {
       font-size: 0.875rem;
       color: var(--muted);
       margin-top: 2px;
     }
 
-    .form-section { padding: 28px 32px; }
-    .form-section + .form-section { border-top: 1px solid var(--border); }
+    .form-section {
+      padding: 22px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .form-section:last-of-type { border-bottom: none; }
 
-    .section-title {
+    /* Scoped under .form-section so it doesn't collide with .section-header
+       in the landing-page shell above. */
+    .form-section .section-title {
       font-family: 'Poppins', sans-serif;
       font-size: 15px;
       font-weight: 600;
       color: var(--text);
       margin-bottom: 4px;
     }
-    .section-subtitle {
+    .form-section .section-subtitle {
       font-size: 0.85rem;
       color: var(--muted);
       font-weight: 300;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .field-grid {
@@ -164,24 +265,15 @@
       grid-template-columns: 1fr 1fr;
       gap: 16px;
     }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .field { display: flex; flex-direction: column; gap: 6px; }
     .field.full { grid-column: 1 / -1; }
-
     label {
       font-size: 0.875rem;
       font-weight: 500;
       color: var(--text);
     }
 
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    textarea {
+    input[type="text"], input[type="email"], input[type="tel"], textarea {
       width: 100%;
       padding: 11px 16px;
       border: 1px solid var(--border);
@@ -200,7 +292,6 @@
       border-color: var(--green-dark);
       box-shadow: 0 0 0 3px rgba(58, 90, 46, 0.1);
     }
-
     input[readonly] {
       background: #f5f5f4;
       color: var(--muted);
@@ -236,11 +327,8 @@
       display: flex;
       justify-content: flex-end;
       gap: 12px;
-      padding: 20px 32px;
-      border-top: 1px solid var(--border);
-      background: #fafaf9;
+      padding: 18px 0 0;
     }
-
     .btn {
       padding: 11px 22px;
       border-radius: 8px;
@@ -250,10 +338,8 @@
       cursor: pointer;
       border: 1px solid transparent;
       transition: background 0.2s, transform 0.1s, box-shadow 0.2s, border-color 0.2s;
-      letter-spacing: 0.01em;
     }
     .btn:active { transform: scale(0.99); }
-
     .btn-primary {
       background: var(--green-dark);
       color: var(--white);
@@ -262,7 +348,6 @@
       background: #2d4724;
       box-shadow: 0 4px 14px rgba(58,90,46,0.25);
     }
-
     .btn-secondary {
       background: var(--white);
       border-color: var(--border);
@@ -296,172 +381,303 @@
       pointer-events: none;
       z-index: 100;
     }
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .toast.show { opacity: 1; transform: translateY(0); }
 
     @media (max-width: 640px) {
-      .top-nav { padding: 14px 20px; }
-      .profile-container { padding: 28px 16px 60px; }
-      .avatar-row { padding: 22px 20px; gap: 14px; }
-      .avatar { width: 56px; height: 56px; font-size: 20px; }
-      .form-section { padding: 22px 20px; }
-      .action-row { padding: 16px 20px; flex-direction: column-reverse; }
-      .action-row .btn { width: 100%; }
       .field-grid { grid-template-columns: 1fr; }
-      .nav-user span:first-child { display: none; }
+      .stars-bg { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <header class="top-nav">
-    <div class="brand-mini">CSUS Career Center Volunteer</div>
-    <div class="nav-user">
-      <span>Signed in as <strong id="nav-email">jane.hornet@csus.edu</strong></span>
-      <button class="btn-logout" onclick="handleLogout()">Log out</button>
+<div class="shell">
+
+  <!-- Header (mirrors landing page) -->
+  <div class="header">
+    <div class="logo">CSUS<br>Career<br>center</div>
+
+    <div class="stars-bg">
+      <span class="s sa">&#9733;</span>
+      <span class="s sb">&#9733;</span>
+      <span class="s sa">&#9733;</span>
+      <span class="s sc">&#9733;</span>
+      <span class="s sb">&#9733;</span>
+      <span class="s sa">&#9733;</span>
+      <span class="s sc">&#9733;</span>
+      <span class="s sb">&#9733;</span>
+      <span class="s sa">&#9733;</span>
     </div>
-  </header>
 
-  <main class="profile-container">
-    <div class="page-header">
-      <h1>Profile Settings</h1>
-      <p>Update your personal information and availability.</p>
-    </div>
+    <!-- Header avatar — same component as landing page. Click goes to
+         profile (here) when logged in, login when logged out. -->
+    <button class="header-avatar" id="header-avatar" type="button" onclick="handleAvatarClick()" aria-label="Profile">
+      <svg class="avatar-silhouette" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="9" r="4"/>
+        <path d="M4 22c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+      </svg>
+      <img class="avatar-photo" id="header-avatar-photo" alt="" style="display:none"/>
+    </button>
+  </div>
 
-    <div class="card">
+  <!-- Body -->
+  <div class="body">
 
-      <div class="avatar-row">
-        <div class="avatar" id="avatar">JH</div>
-        <div class="avatar-info">
-          <h2 id="display-name">Jane Hornet</h2>
-          <p id="display-email">jane.hornet@csus.edu</p>
+    <!-- Sidebar (mirrors landing page) -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="dash-title">Dashboard</div>
+
+        <!-- Home: navigates back to the landing/events page. -->
+        <div class="nav-item" onclick="window.location.href='csus-landing-page-events.html'">
+          <svg class="nav-icon" viewBox="0 0 24 24">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
+            <path d="M9 21V12h6v9" />
+          </svg>
+          Home
         </div>
+
+        <!--
+          The Messaging, My Events, and Calendar nav items are temporarily
+          hidden until those pages exist. Re-enable each one by removing the
+          surrounding HTML comment when the corresponding page is built.
+        -->
+        <!--
+        <div class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+          </svg>
+          Messaging
+        </div>
+
+        <div class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="17" rx="2" />
+            <path d="M8 2v4M16 2v4M3 10h18" />
+            <rect x="7" y="14" width="3" height="3" />
+          </svg>
+          My Events
+        </div>
+
+        <div class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="17" rx="2" />
+            <path d="M8 2v4M16 2v4M3 10h18" />
+          </svg>
+          Calendar
+        </div>
+        -->
       </div>
 
-      <section class="form-section">
-        <h3 class="section-title">Personal Information</h3>
-        <p class="section-subtitle">This information will be visible to Career Center coordinators.</p>
-
-        <div class="field-grid">
-          <div class="field">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" autocomplete="name" value="Jane Hornet"/>
-            <span class="error-msg" id="name-error">Name is required.</span>
-          </div>
-
-          <div class="field">
-            <label for="email">Email address</label>
-            <input type="email" id="email" value="jane.hornet@csus.edu" readonly/>
-          </div>
-
-          <div class="field">
-            <label for="phone">Phone</label>
-            <input type="tel" id="phone" autocomplete="tel" placeholder="(916) 555-0123"/>
-          </div>
-
-          <div class="field">
-            <label for="major">Major / Program</label>
-            <input type="text" id="major" placeholder="Computer Science"/>
-          </div>
-
-          <div class="field full">
-            <label for="bio">About you</label>
-            <textarea id="bio" placeholder="Tell us a bit about yourself and why you want to volunteer."></textarea>
-          </div>
-
-          <div class="field full">
-            <label for="skills">Skills & Interests</label>
-            <input type="text" id="skills" placeholder="e.g. tutoring, event setup, social media, tabling"/>
-          </div>
-        </div>
-      </section>
-
-      <section class="form-section">
-        <h3 class="section-title">Weekly Availability</h3>
-        <p class="section-subtitle">Select the days you're generally available to volunteer.</p>
-
-        <div class="day-chips" id="day-chips">
-          <div class="day-chip" data-day="mon">Mon</div>
-          <div class="day-chip" data-day="tue">Tue</div>
-          <div class="day-chip" data-day="wed">Wed</div>
-          <div class="day-chip" data-day="thu">Thu</div>
-          <div class="day-chip" data-day="fri">Fri</div>
-          <div class="day-chip" data-day="sat">Sat</div>
-          <div class="day-chip" data-day="sun">Sun</div>
-        </div>
-      </section>
-
-      <div class="action-row">
-        <button class="btn btn-secondary" onclick="handleCancel()">Cancel</button>
-        <button class="btn btn-primary" id="save-btn" onclick="handleSave()">Save Changes</button>
+      <!-- Login row: only visible when logged out. (Shouldn't normally be
+           visible on this page since requireLogin() guards it, but we
+           render the same sidebar markup for parity with landing.) -->
+      <div class="logout-row" id="login-row" style="display:none" onclick="window.location.href='login.html'">
+        <svg class="nav-icon" viewBox="0 0 24 24">
+          <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" />
+          <polyline points="10 17 15 12 10 7" />
+          <line x1="15" y1="12" x2="3" y2="12" />
+        </svg>
+        Log In
       </div>
-    </div>
-  </main>
 
-  <div class="toast" id="toast">Profile updated successfully</div>
+      <!-- Logout row: only visible when logged in. -->
+      <div class="logout-row" id="logout-row" style="display:none" onclick="handleLogout()">
+        <svg class="nav-icon" viewBox="0 0 24 24">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        Logout
+      </div>
+    </aside>
 
-  <script>
-    // TODO: re-enable auth guard once login flow is fully connected
-    // const token = localStorage.getItem('token');
-    // if (!token) { window.location.href = 'login.html'; }
+    <!-- Main panel: profile customization form lives here, in the same
+         spot the events grid sits on the landing page. -->
+    <main class="main">
+      <div class="main-inner">
 
-    // If a user is logged in, populate name/email from localStorage
-    const cached = JSON.parse(localStorage.getItem('user') || '{}');
-    if (cached.name) {
-      document.getElementById('display-name').textContent = cached.name;
-      document.getElementById('name').value = cached.name;
-      document.getElementById('avatar').textContent = cached.name
-        .trim().split(/\s+/).slice(0,2).map(s => s[0]).join('').toUpperCase();
+        <div class="section-header">
+          <span class="page-title">Profile Settings</span>
+          <span class="page-subtitle">Update your personal information and availability.</span>
+        </div>
+
+        <div class="profile-card">
+
+          <div class="pic-row">
+            <div class="profile-pic" id="profile-pic">JH</div>
+            <div class="pic-info">
+              <h2 id="display-name">Jane Hornet</h2>
+              <p id="display-email">jane.hornet@csus.edu</p>
+            </div>
+          </div>
+
+          <section class="form-section">
+            <h3 class="section-title">Personal Information</h3>
+            <p class="section-subtitle">This information will be visible to Career Center coordinators.</p>
+
+            <div class="field-grid">
+              <div class="field">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" autocomplete="name" value="Jane Hornet"/>
+                <span class="error-msg" id="name-error">Name is required.</span>
+              </div>
+
+              <div class="field">
+                <label for="email">Email address</label>
+                <input type="email" id="email" value="jane.hornet@csus.edu" readonly/>
+              </div>
+
+              <div class="field">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" autocomplete="tel" placeholder="(916) 555-0123"/>
+              </div>
+
+              <div class="field">
+                <label for="major">Major / Program</label>
+                <input type="text" id="major" placeholder="Computer Science"/>
+              </div>
+
+              <div class="field full">
+                <label for="bio">About you</label>
+                <textarea id="bio" placeholder="Tell us a bit about yourself and why you want to volunteer."></textarea>
+              </div>
+
+              <div class="field full">
+                <label for="skills">Skills &amp; Interests</label>
+                <input type="text" id="skills" placeholder="e.g. tutoring, event setup, social media, tabling"/>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <h3 class="section-title">Weekly Availability</h3>
+            <p class="section-subtitle">Select the days you're generally available to volunteer.</p>
+
+            <div class="day-chips" id="day-chips">
+              <div class="day-chip" data-day="mon">Mon</div>
+              <div class="day-chip" data-day="tue">Tue</div>
+              <div class="day-chip" data-day="wed">Wed</div>
+              <div class="day-chip" data-day="thu">Thu</div>
+              <div class="day-chip" data-day="fri">Fri</div>
+              <div class="day-chip" data-day="sat">Sat</div>
+              <div class="day-chip" data-day="sun">Sun</div>
+            </div>
+          </section>
+
+          <div class="action-row">
+            <button class="btn btn-secondary" onclick="handleCancel()">Cancel</button>
+            <button class="btn btn-primary" id="save-btn" onclick="handleSave()">Save Changes</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="toast" id="toast">Profile updated successfully</div>
+
+<script src="auth.js"></script>
+<script>
+  // Auth guard: profile is logged-in-only. requireLogin() redirects if needed.
+  // Throwing halts the rest of the script while the redirect navigates away.
+  if (!requireLogin()) {
+    throw new Error('redirecting to login');
+  }
+
+  // ── Hydrate name/email/initials from the cached user (set at login). ──
+  const cached = getUser() || {};
+  if (cached.name) {
+    document.getElementById('display-name').textContent = cached.name;
+    document.getElementById('name').value = cached.name;
+    document.getElementById('profile-pic').textContent = cached.name
+      .trim().split(/\s+/).slice(0, 2).map(s => s[0]).join('').toUpperCase();
+  }
+  if (cached.email) {
+    document.getElementById('display-email').textContent = cached.email;
+    document.getElementById('email').value = cached.email;
+  }
+
+  // ── Day chip toggle (UI-only state for now). ──────────────────────────
+  document.getElementById('day-chips').addEventListener('click', e => {
+    if (e.target.classList.contains('day-chip')) {
+      e.target.classList.toggle('active');
     }
-    if (cached.email) {
-      document.getElementById('display-email').textContent = cached.email;
-      document.getElementById('email').value = cached.email;
-      document.getElementById('nav-email').textContent = cached.email;
+  });
+
+  // ── Header avatar click + sync (mirrors landing-page behavior). ───────
+  function handleAvatarClick() {
+    if (isLoggedIn()) {
+      // Already on profile; clicking just reloads the page. No harm done.
+      window.location.href = 'profile-creating.html';
+      return;
+    }
+    localStorage.setItem('redirectAfterLogin', 'profile-creating.html');
+    window.location.href = 'login.html';
+  }
+
+  function syncAvatar() {
+    const photo = document.getElementById('header-avatar-photo');
+    const silhouette = document.querySelector('#header-avatar .avatar-silhouette');
+    const user = getUser();
+    if (user && user.photoUrl) {
+      photo.src = user.photoUrl;
+      photo.style.display = 'block';
+      silhouette.style.display = 'none';
+    } else {
+      photo.style.display = 'none';
+      silhouette.style.display = 'block';
+    }
+  }
+
+  function syncSidebar() {
+    const loggedIn = isLoggedIn();
+    document.getElementById('login-row').style.display  = loggedIn ? 'none' : 'flex';
+    document.getElementById('logout-row').style.display = loggedIn ? 'flex' : 'none';
+  }
+
+  // ── Form actions. Save logic is intentionally a UI stub — the backend
+  //    persistence is a separate sprint task. ──────────────────────────
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  function handleSave() {
+    const name = document.getElementById('name').value.trim();
+    const nameError = document.getElementById('name-error');
+    nameError.classList.remove('show');
+
+    if (!name) {
+      nameError.classList.add('show');
+      return;
     }
 
-    // Toggle day chips
-    document.getElementById('day-chips').addEventListener('click', e => {
-      if (e.target.classList.contains('day-chip')) {
-        e.target.classList.toggle('active');
-      }
-    });
+    // Reflect the new name in the on-page header card immediately. This is
+    // local UI state only — it is NOT persisted to the server here.
+    document.getElementById('display-name').textContent = name;
+    document.getElementById('profile-pic').textContent = name
+      .trim().split(/\s+/).slice(0, 2).map(s => s[0]).join('').toUpperCase();
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2500);
-    }
+    // TODO (teammate task): POST updated fields to /api/auth/me (or wherever
+    // the new endpoint lives) and update the cached user object on success.
+    showToast('Profile updated successfully');
+  }
 
-    function handleSave() {
-      const name = document.getElementById('name').value.trim();
-      const nameError = document.getElementById('name-error');
-      nameError.classList.remove('show');
+  function handleCancel() {
+    if (confirm('Discard unsaved changes?')) window.location.reload();
+  }
 
-      if (!name) {
-        nameError.classList.add('show');
-        return;
-      }
+  function handleLogout() {
+    // Clears localStorage and redirects to landing as anonymous visitor.
+    logout();
+  }
 
-      document.getElementById('display-name').textContent = name;
-      document.getElementById('avatar').textContent = name
-        .trim().split(/\s+/).slice(0,2).map(s => s[0]).join('').toUpperCase();
-
-      // TODO: POST updated fields to backend once PUT /api/auth/me endpoint exists
-      showToast('Profile updated successfully');
-    }
-
-    function handleCancel() {
-      if (confirm('Discard unsaved changes?')) window.location.reload();
-    }
-
-    function handleLogout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = 'login.html';
-    }
-  </script>
+  syncSidebar();
+  syncAvatar();
+</script>
 </body>
 </html>
