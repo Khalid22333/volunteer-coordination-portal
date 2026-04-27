@@ -8,11 +8,22 @@ CREATE DATABASE IF NOT EXISTS career_center;
 USE career_center;
 
 CREATE TABLE IF NOT EXISTS users (
-  id            INT AUTO_INCREMENT PRIMARY KEY,
-  name          VARCHAR(100) NOT NULL,
-  email         VARCHAR(255) NOT NULL UNIQUE,
-  password_hash VARCHAR(255) NOT NULL,
-  created_at    TIMESTAMP   DEFAULT CURRENT_TIMESTAMP
+  id                              INT AUTO_INCREMENT PRIMARY KEY,
+  name                            VARCHAR(100) NOT NULL,
+  email                           VARCHAR(255) NOT NULL UNIQUE,
+  password_hash                   VARCHAR(255) NOT NULL,
+  -- Email verification. New rows start unverified; the /verify-email
+  -- endpoint flips this to true once the user clicks their email link.
+  -- Token columns are nullable because they're cleared after use.
+  email_verified                  BOOLEAN     NOT NULL DEFAULT FALSE,
+  verification_token              VARCHAR(64) NULL,
+  verification_token_expires_at   DATETIME    NULL,
+  -- Password reset. Token columns are nullable because they're cleared
+  -- after use (or after expiry, lazily). A user has at most one active
+  -- reset token at a time — issuing a new one overwrites the previous.
+  password_reset_token            VARCHAR(64) NULL,
+  password_reset_token_expires_at DATETIME    NULL,
+  created_at                      TIMESTAMP   DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Volunteer events / open positions.

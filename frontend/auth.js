@@ -44,6 +44,33 @@ function isLoggedIn() {
   return getToken() !== null;
 }
 
+// True if the cached user record says they've verified their email.
+// Used to gate actions like applying to events. Note: trusts the cached
+// flag for UI purposes — the backend re-checks anything that matters.
+function isEmailVerified() {
+  if (IS_DESIGN_PREVIEW) return true; // don't block design work
+  const u = getUser();
+  return !!(u && u.email_verified);
+}
+
+// Refresh the cached user object from the server. Useful right after the
+// user verifies their email in another tab, so the current tab picks up
+// the new email_verified flag without a manual reload. Returns the fresh
+// user or null if not logged in / token expired.
+async function refreshUser() {
+  if (!isLoggedIn()) return null;
+  try {
+    const res = await fetch('/api/auth/me', { headers: authHeader() });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data.user) {
+      localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+      return data.user;
+    }
+  } catch {}
+  return null;
+}
+
 // ---- Action helpers ----
 
 // Clear the session and send the user somewhere sensible.
