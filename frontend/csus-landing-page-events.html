@@ -657,6 +657,37 @@
     // else runs (the page is unloading anyway).
     if (!requireLogin()) return;
 
+    // Verification gate: account must have a confirmed email before
+    // applying. Offer a one-click resend so the user can fix this without
+    // leaving the page.
+    if (!isEmailVerified()) {
+      const wantResend = confirm(
+        'You need to verify your email before applying.\n\n' +
+        'Click OK to resend the verification email, or Cancel to dismiss.'
+      );
+      if (wantResend) {
+        fetch('/api/auth/resend-verification', {
+          method: 'POST',
+          headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        })
+          .then(r => r.json())
+          .then(data => {
+            if (data.ok) {
+              showToast(data.alreadyVerified
+                ? 'Email already verified — try clicking Apply again.'
+                : 'Verification email sent. Check your inbox.');
+              // If they actually were already verified server-side, refresh
+              // the cached user so a second click works without reloading.
+              if (data.alreadyVerified) refreshUser();
+            } else {
+              showToast(data.error || 'Could not send email right now.');
+            }
+          })
+          .catch(() => showToast('Network error. Try again.'));
+      }
+      return;
+    }
+
     if (appliedSet.has(id)) return;
     appliedSet.add(id);
 

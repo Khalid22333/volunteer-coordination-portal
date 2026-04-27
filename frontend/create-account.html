@@ -82,6 +82,30 @@
 
     .error-msg { font-size: 0.78rem; color: var(--error); display: none; }
 
+    /* Post-signup confirmation panel — replaces the form once the account is created. */
+    .verify-panel { display: none; flex-direction: column; gap: 16px; margin-top: 32px; }
+    .verify-panel.active { display: flex; }
+    .verify-panel .check {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: #eaf2e3; color: var(--green-dark);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 700;
+    }
+    .verify-panel h2 { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 600; color: var(--text); }
+    .verify-panel p  { font-size: 0.95rem; color: var(--muted); line-height: 1.55; }
+    .verify-panel .email-shown { color: var(--text); font-weight: 500; }
+    .verify-panel .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+    .verify-panel .btn-secondary {
+      flex: 1; min-width: 140px;
+      padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--white); color: var(--text); cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500;
+    }
+    .verify-panel .btn-secondary:hover { border-color: #aab; }
+    .verify-panel .btn-secondary[disabled] { opacity: 0.6; cursor: default; }
+    .verify-panel .resend-status { font-size: 0.85rem; color: var(--green-dark); display: none; }
+    .verify-panel .resend-status.show { display: block; }
+
     .right { width: 50%; overflow: hidden; }
     .right img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -124,6 +148,27 @@
 
       <p class="signin-prompt">Have an account? <a href="login.html">Sign In</a></p>
     </div>
+
+    <!-- Shown only after a successful signup. The form-section above is
+         hidden when this panel becomes active. -->
+    <div class="verify-panel" id="verify-panel">
+      <div class="check">✓</div>
+      <h2>Check your email</h2>
+      <p>
+        We sent a verification link to
+        <span class="email-shown" id="verify-email-shown"></span>.
+        Click the link in that email to confirm your address — once verified,
+        you'll be able to apply to volunteer events.
+      </p>
+      <p style="font-size: 0.85rem;">
+        Didn't get the email? Check your spam folder, or resend it below.
+      </p>
+      <div class="row">
+        <button class="btn-secondary" id="resend-btn" type="button">Resend email</button>
+        <button class="btn-secondary" id="continue-btn" type="button">Continue to events</button>
+      </div>
+      <span class="resend-status" id="resend-status">New verification email sent.</span>
+    </div>
   </div>
 
   <div class="right">
@@ -132,6 +177,19 @@
 
   <script src="auth.js"></script>
   <script>
+    // Stricter format check than /\S+@\S+\.\S+/ — requires a TLD of 2+
+    // letters and rejects whitespace/garbage. Backend re-checks this AND
+    // verifies the domain has DNS records that accept mail, so even if
+    // someone bypasses this in the browser they can't register a fake
+    // domain like "asdf@notarealdomain.zzz".
+    const EMAIL_REGEX = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+    function showEmailError(msg) {
+      const el = document.getElementById('email-error');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
     function handleSignup() {
       const name     = document.getElementById('name');
       const email    = document.getElementById('email');
@@ -142,10 +200,21 @@
       document.getElementById('email-error').style.display = 'none';
       document.getElementById('pass-error').style.display  = 'none';
 
+      const emailValue = email.value.trim().toLowerCase();
+
       let valid = true;
-      if (!name.value.trim())                              { document.getElementById('name-error').style.display  = 'block'; valid = false; }
-      if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) { document.getElementById('email-error').style.display = 'block'; valid = false; }
-      if (!password.value || password.value.length < 8)   { document.getElementById('pass-error').style.display  = 'block'; valid = false; }
+      if (!name.value.trim()) {
+        document.getElementById('name-error').style.display = 'block';
+        valid = false;
+      }
+      if (!emailValue || !EMAIL_REGEX.test(emailValue)) {
+        showEmailError('Please enter a valid email address.');
+        valid = false;
+      }
+      if (!password.value || password.value.length < 8) {
+        document.getElementById('pass-error').style.display = 'block';
+        valid = false;
+      }
       if (!terms.checked) { alert('Please agree to the terms & policy to continue.'); valid = false; }
       if (!valid) return;
 
@@ -154,28 +223,93 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name:     name.value.trim(),
-          email:    email.value.trim(),
+          email:    emailValue,
           password: password.value
         })
       })
       .then(res => res.json())
       .then(data => {
         if (data.error) {
-          alert(data.error === 'email already registered'
-            ? 'That email is already registered. Try logging in instead.'
-            : data.error);
+          // Show email-specific errors (bad format, bad domain, already
+          // registered) inline next to the email field rather than as a
+          // disruptive alert. Other errors still alert.
+          const msg = data.error;
+          const isEmailError =
+            msg === 'email already registered' ||
+            msg.startsWith('please enter a valid email') ||
+            msg.startsWith('the email domain');
+          if (isEmailError) {
+            showEmailError(
+              msg === 'email already registered'
+                ? 'That email is already registered. Try logging in instead.'
+                : msg.charAt(0).toUpperCase() + msg.slice(1)
+            );
+          } else {
+            alert(msg);
+          }
           return;
         }
+        // Account created. Stash the JWT + user so we're "logged in", but
+        // DON'T redirect — show the "check your email" panel so it's
+        // unmistakable that there's a verification step waiting.
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        // If the user was bounced here from a protected action, send them back.
-        // Otherwise, drop them on the landing page.
-        window.location.href = consumeRedirectAfterLogin();
+        showVerifyPanel(data.user.email);
       })
       .catch(() => alert('Network error. Please try again.'));
     }
 
-    document.addEventListener('keydown', e => { if (e.key === 'Enter') handleSignup(); });
+    function showVerifyPanel(email) {
+      document.querySelector('.form-section').style.display = 'none';
+      document.querySelector('.brand h1').textContent = 'You\u2019re almost in';
+      document.getElementById('verify-email-shown').textContent = email;
+      document.getElementById('verify-panel').classList.add('active');
+    }
+
+    // Resend the verification email. Uses the auth token we just stored,
+    // so the backend knows which account to re-send for.
+    document.getElementById('resend-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('resend-btn');
+      const status = document.getElementById('resend-status');
+      btn.disabled = true;
+      btn.textContent = 'Sending\u2026';
+      status.classList.remove('show');
+      try {
+        const res = await fetch('/api/auth/resend-verification', {
+          method: 'POST',
+          headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        });
+        const data = await res.json();
+        if (data.ok) {
+          status.textContent = data.alreadyVerified
+            ? 'This email is already verified.'
+            : 'New verification email sent.';
+          status.classList.add('show');
+          btn.textContent = 'Resent';
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Resend email';
+          alert(data.error || 'Could not resend right now.');
+        }
+      } catch {
+        btn.disabled = false;
+        btn.textContent = 'Resend email';
+        alert('Network error. Please try again.');
+      }
+    });
+
+    document.getElementById('continue-btn').addEventListener('click', () => {
+      // Lenient policy: unverified users can browse the site. The Apply
+      // button will prompt them to verify when they actually try to use it.
+      window.location.href = consumeRedirectAfterLogin();
+    });
+
+    // Enter-to-submit only applies while the form is visible.
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !document.getElementById('verify-panel').classList.contains('active')) {
+        handleSignup();
+      }
+    });
   </script>
 </body>
 </html>
