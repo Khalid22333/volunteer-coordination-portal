@@ -88,16 +88,18 @@ The important property: **adding admin functionality later won't require changes
 - MySQL 8.0+
 - Git
 
+> **A note on shells:** the steps below show two columns of commands for the steps that differ between operating systems. Use the **macOS / Linux** column if you're on a Mac (Terminal) or Linux. Use the **Windows** column if you're on Windows (Command Prompt or PowerShell). If you're on Windows but using **Git Bash** or **WSL**, follow the macOS / Linux column instead — those shells understand Unix commands like `cp`.
+
 ### Setup
 
-1. Clone the repository and enter it:
+1. Clone the repository and enter it (same on every OS):
 
    ```
    git clone https://github.com/Khalid22333/volunteer-coordination-portal.git
    cd volunteer-coordination-portal
    ```
 
-2. Initialize the database (from the repo root):
+2. Initialize the database (from the repo root). The same command works on every OS — make sure the `mysql` CLI is on your `PATH` first (on Windows you may need to add `C:\Program Files\MySQL\MySQL Server 8.0\bin` to your `PATH`, or run the command from the MySQL Command Line Client):
 
    ```
    mysql -u root -p < server/schema.sql
@@ -114,26 +116,59 @@ The important property: **adding admin functionality later won't require changes
 
    `001` adds the email-verification columns and grandfathers existing rows in as already-verified, so people who signed up before that feature don't get locked out. `002` adds the password-reset columns. Both are one-shot — re-running will error on duplicate columns. New installs running `schema.sql` get all of these columns automatically.
 
-3. Configure backend environment variables:
+3. Configure backend environment variables. First move into the server directory (same on every OS):
 
    ```
    cd server
+   ```
+
+   Then copy `.env.example` to `.env`:
+
+   **macOS / Linux (Terminal, bash, zsh, Git Bash, WSL):**
+
+   ```
    cp .env.example .env
    ```
 
-   Open `.env` and fill in your MySQL password and a JWT secret. Generate a secret with:
+   **Windows (Command Prompt):**
+
+   ```
+   copy .env.example .env
+   ```
+
+   **Windows (PowerShell):**
+
+   ```
+   Copy-Item .env.example .env
+   ```
+
+   Open `.env` and fill in your MySQL password and a JWT secret. Generate a secret with one of the commands below:
+
+   **macOS / Linux:**
 
    ```
    openssl rand -base64 48
    ```
 
-4. Install backend dependencies:
+   **Windows (PowerShell):**
+
+   ```
+   [Convert]::ToBase64String((1..48 | ForEach-Object { Get-Random -Maximum 256 }))
+   ```
+
+   **Any OS (using Node, which you already have installed):**
+
+   ```
+   node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
+   ```
+
+4. Install backend dependencies (same on every OS — run from the `server/` directory):
 
    ```
    npm install
    ```
 
-5. Seed the events table with the demo data:
+5. Seed the events table with the demo data (same on every OS):
 
    ```
    npm run seed
@@ -141,13 +176,20 @@ The important property: **adding admin functionality later won't require changes
 
    This inserts the six demo events. Re-running it wipes and reinserts (so ids stay stable at 1–6).
 
-6. Start the server:
+6. Start the server (same on every OS):
 
    ```
    npm run dev
    ```
 
    Visit `http://localhost:3001/` — the landing page is served from Express, and the API lives at `/api/...` on the same origin.
+
+### Troubleshooting
+
+- **`'cp' is not recognized as an internal or external command` (Windows):** you're on Windows CMD/PowerShell but ran a Unix command. Use the `copy` (CMD) or `Copy-Item` (PowerShell) version shown in step 3 — or run the project from **Git Bash** or **WSL**, where `cp` works.
+- **`'openssl' is not recognized…` (Windows):** OpenSSL isn't on your `PATH`. Use the PowerShell or Node alternative shown in step 3 instead.
+- **`'mysql' is not recognized…`:** the MySQL CLI isn't on your `PATH`. On Windows, either add `C:\Program Files\MySQL\MySQL Server 8.0\bin` to your `PATH` or run the command from the MySQL Command Line Client shortcut. On macOS, if you installed MySQL via Homebrew it should already be on your `PATH`; otherwise add `/usr/local/mysql/bin` to your shell profile.
+- **Port 3001 already in use:** another process is listening on the port. Stop it, or change `PORT` in `server/.env`.
 
 ### Email verification in development
 
