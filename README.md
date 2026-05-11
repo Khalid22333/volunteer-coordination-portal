@@ -22,7 +22,7 @@ This portal replaces inefficient methods like email announcements and physical s
 | Dylan Hulett | |
 | Jayden Brown | |
 | Manjot Dhaliwal | |
-| Khalid Abid | |
+| Khalid Abid |Front end Login/Create Account |
 | Anna Kubrak | |
 
 ---
