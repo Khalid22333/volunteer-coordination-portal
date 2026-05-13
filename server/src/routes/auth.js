@@ -204,28 +204,172 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// ── Profile-edit helpers ────────────────────────────────────────────────
+// Loose phone format. Permissive on purpose — students will type things
+// like "(916) 555-0123", "916-555-0123", or "+1 916 555 0123". We require
+// at least 7 characters and only digits + the usual punctuation.
+const PHONE_REGEX = /^[+]?[\d\s().-]{7,20}$/;
+
+// Canonical day codes used by both the form and the DB column.
+const VALID_DAYS = new Set(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']);
+const DAY_ORDER = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+
+// Length ceilings, matched to the column types in schema.sql.
+const MAX_MAJOR = 150;
+const MAX_BIO = 1000;
+const MAX_SKILLS = 500;
+
+// Trim a string; return null for empty/whitespace, undefined if absent.
+// The undefined-vs-null distinction is what lets the PUT handler tell
+// "leave this field alone" apart from "clear this field".
+function nullIfEmpty(v) {
+  if (v === undefined || v === null) return undefined;
+  const s = String(v).trim();
+  return s === '' ? null : s;
+}
+
+// Normalise an availability array (e.g. ['Mon','tue','MON']) into a sorted,
+// deduped CSV like "mon,tue". Throws on non-array inputs so the route
+// handler can 400 the request.
+function normaliseAvailability(arr) {
+  if (!Array.isArray(arr)) {
+    const err = new Error('availability must be an array of day codes');
+    err.statusCode = 400;
+    throw err;
+  }
+  const set = new Set(
+    arr.map(d => String(d).toLowerCase().trim()).filter(d => VALID_DAYS.has(d))
+  );
+  return DAY_ORDER.filter(d => set.has(d)).join(',');
+}
+
+// Build the user-shaped object we return from GET /me and PUT /me. Keeps
+// the response identical between the two so the frontend only ever sees
+// one shape.
+function shapeUser(u) {
+  return {
+    id: u.id,
+    name: u.name,
+    email: u.email,
+    email_verified: !!u.email_verified,
+    phone: u.phone,
+    major: u.major,
+    bio: u.bio,
+    skills: u.skills,
+    availability: u.availability ? u.availability.split(',') : [],
+    created_at: u.created_at,
+  };
+}
+
 // GET /api/auth/me  (requires a valid token)
 router.get('/me', requireAuth, async (req, res) => {
   try {
     const [rows] = await db.execute(
-      'SELECT id, name, email, email_verified, created_at FROM users WHERE id = ?',
+      `SELECT id, name, email, email_verified, phone, major, bio, skills,
+              availability, created_at
+         FROM users
+        WHERE id = ?`,
       [req.user.userId]
     );
     if (rows.length === 0) {
       return res.status(404).json({ error: 'user not found' });
     }
-    const u = rows[0];
-    res.json({
-      user: {
-        id: u.id,
-        name: u.name,
-        email: u.email,
-        email_verified: !!u.email_verified,
-        created_at: u.created_at,
-      },
-    });
+    res.json({ user: shapeUser(rows[0]) });
   } catch (err) {
     console.error('Me error:', err);
+    res.status(500).json({ error: 'server error' });
+  }
+});
+
+// PUT /api/auth/me
+//
+// Updates the caller's editable profile fields. Editable set is:
+//   phone, major, bio, skills, availability
+//
+// Semantics:
+//   * Field omitted from the body         → column left unchanged
+//   * Field present but empty string/[]   → column cleared (set to NULL / "")
+//   * Field present and non-empty         → column updated to new value
+//
+// name and email are intentionally NOT editable here — name changes can be
+// added later; email changes need their own verification flow.
+router.put('/me', requireAuth, async (req, res) => {
+  const { phone, major, bio, skills, availability } = req.body || {};
+
+  // ── Clean + validate each field ─────────────────────────────────────
+  const cleanPhone  = nullIfEmpty(phone);
+  const cleanMajor  = nullIfEmpty(major);
+  const cleanBio    = nullIfEmpty(bio);
+  const cleanSkills = nullIfEmpty(skills);
+
+  if (cleanPhone && !PHONE_REGEX.test(cleanPhone)) {
+    return res.status(400).json({ error: 'please enter a valid phone number' });
+  }
+  if (cleanMajor && cleanMajor.length > MAX_MAJOR) {
+    return res.status(400).json({ error: `major must be ${MAX_MAJOR} characters or fewer` });
+  }
+  if (cleanBio && cleanBio.length > MAX_BIO) {
+    return res.status(400).json({ error: `bio must be ${MAX_BIO} characters or fewer` });
+  }
+  if (cleanSkills && cleanSkills.length > MAX_SKILLS) {
+    return res.status(400).json({ error: `skills must be ${MAX_SKILLS} characters or fewer` });
+  }
+
+  // availability: undefined (skip), array (normalise to CSV or NULL),
+  // anything else (reject).
+  let cleanAvailability;
+  if (availability === undefined) {
+    cleanAvailability = undefined;
+  } else {
+    try {
+      const csv = normaliseAvailability(availability);
+      cleanAvailability = csv === '' ? null : csv;
+    } catch (err) {
+      return res.status(err.statusCode || 400).json({ error: err.message });
+    }
+  }
+
+  // ── Build a dynamic UPDATE that only touches present fields ────────
+  const sets = [];
+  const params = [];
+  function maybeSet(col, val) {
+    if (val !== undefined) {
+      sets.push(`${col} = ?`);
+      params.push(val);
+    }
+  }
+  maybeSet('phone',        cleanPhone);
+  maybeSet('major',        cleanMajor);
+  maybeSet('bio',          cleanBio);
+  maybeSet('skills',       cleanSkills);
+  maybeSet('availability', cleanAvailability);
+
+  if (sets.length === 0) {
+    return res.status(400).json({ error: 'no updatable fields provided' });
+  }
+  params.push(req.user.userId);
+
+  try {
+    await db.execute(
+      `UPDATE users SET ${sets.join(', ')} WHERE id = ?`,
+      params
+    );
+
+    // Return the fresh row so the frontend can replace its cached user
+    // object without a follow-up GET.
+    const [rows] = await db.execute(
+      `SELECT id, name, email, email_verified, phone, major, bio, skills,
+              availability, created_at
+         FROM users
+        WHERE id = ?`,
+      [req.user.userId]
+    );
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'user not found' });
+    }
+    res.json({ user: shapeUser(rows[0]) });
+  } catch (err) {
+    console.error('Profile update error:', err);
     res.status(500).json({ error: 'server error' });
   }
 });

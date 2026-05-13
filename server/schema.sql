@@ -23,6 +23,17 @@ CREATE TABLE IF NOT EXISTS users (
   -- reset token at a time — issuing a new one overwrites the previous.
   password_reset_token            VARCHAR(64) NULL,
   password_reset_token_expires_at DATETIME    NULL,
+  -- User-editable profile fields. All optional (NULL = not provided).
+  -- See migrations/003_add_profile_fields.sql for column rationale.
+  -- The API layer (PUT /api/auth/me) is responsible for format + length
+  -- validation; the DB just stores whatever it's handed.
+  phone                           VARCHAR(20)  NULL,
+  major                           VARCHAR(150) NULL,
+  bio                             TEXT         NULL,
+  skills                          TEXT         NULL,
+  -- CSV of day codes from {mon,tue,wed,thu,fri,sat,sun}, in fixed weekday
+  -- order. Normalised + validated server-side before insert.
+  availability                    VARCHAR(50)  NULL,
   created_at                      TIMESTAMP   DEFAULT CURRENT_TIMESTAMP
 );
 

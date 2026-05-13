@@ -37,14 +37,13 @@ This portal replaces inefficient methods like email announcements and physical s
 - Forgot-password flow: the "Forgot password?" link on login leads to `/forgot-password.html`, which submits an email to `/api/auth/forgot-password` and always returns the same generic confirmation regardless of whether an account exists (so the endpoint can't be used to enumerate registered emails). When the email *does* match an account, the server issues a 1-hour reset token and emails (or console-logs) a link to `/reset-password.html`, where the user picks a new password. A successful reset also marks the account as `email_verified` (clicking a link delivered to the inbox is itself proof of ownership) and clears any cached login session in `localStorage` so the new password is required.
 - Auth-aware navigation: protected actions (e.g. "Apply" on an event) prompt for login and bounce the user back where they were after sign-in
 - Public landing page with upcoming events, served from the database
-- Profile customization page styled to match the landing page (form fields wired up; backend save still in progress)
+- Profile customization: logged-in users can edit their phone, major/program, "about you" bio, skills & interests, and weekly availability. The form prefills from the server on page load and saves via `PUT /api/auth/me`. The save endpoint validates phone format, enforces per-field length limits, and normalises the availability array into a sorted CSV column. Partial saves are supported: fields omitted from the request body are left unchanged, while fields sent as empty values are cleared.
 - Single-origin deployment: Express serves both the API and the static frontend at `http://localhost:3001/`
 - Design-preview mode: pages opened directly via `file://` skip the auth guards, so the team can iterate on styling without booting the server
 
 ### Planned
 
 - Admin UI for creating, editing, and deleting events (currently events are populated by a seed script — see Architecture below)
-- Backend persistence for profile updates (`PUT /api/auth/me`)
 - Volunteer assignment management and per-event sign-up tracking
 - Real SMTP wiring for production (SendGrid / Gmail / etc.) — currently emails log to the server console in dev mode
 - Messaging, Calendar, and "My Events" pages (sidebar entries are commented out until the pages exist)
@@ -112,9 +111,18 @@ The important property: **adding admin functionality later won't require changes
    ```
    mysql -u root -p career_center < server/migrations/001_add_email_verification.sql
    mysql -u root -p career_center < server/migrations/002_add_password_reset.sql
+   mysql -u root -p career_center < server/migrations/003_add_profile_fields.sql
    ```
 
-   `001` adds the email-verification columns and grandfathers existing rows in as already-verified, so people who signed up before that feature don't get locked out. `002` adds the password-reset columns. Both are one-shot — re-running will error on duplicate columns. New installs running `schema.sql` get all of these columns automatically.
+   `001` adds the email-verification columns and grandfathers existing rows in as already-verified, so people who signed up before that feature don't get locked out. `002` adds the password-reset columns. `003` adds the user-editable profile columns (`phone`, `major`, `bio`, `skills`, `availability`). All three are one-shot — re-running will error on duplicate columns. New installs running `schema.sql` get all of these columns automatically.
+
+   **Don't have the `mysql` CLI on your `PATH`?** From `server/`, run each migration through the Node-based migration runner instead — it reuses the same DB connection the server uses, so no CLI install or `PATH` setup is required:
+
+   ```
+   npm run migrate -- 001_add_email_verification.sql
+   npm run migrate -- 002_add_password_reset.sql
+   npm run migrate -- 003_add_profile_fields.sql
+   ```
 
 3. Configure backend environment variables. First move into the server directory (same on every OS):
 
@@ -221,7 +229,8 @@ Any frontend HTML file can be opened directly from the filesystem (e.g. by doubl
 | GET    | `/api/health`                      | —      | Health check; confirms the server is running. |
 | POST   | `/api/auth/signup`                 | —      | Create a new user account. Validates email format and verifies the domain has DNS records that accept mail. Issues a verification token and triggers the verification email. Returns `{ user, token }` with `user.email_verified === false`. |
 | POST   | `/api/auth/login`                  | —      | Log in. Returns `{ user, token }` including `user.email_verified`. |
-| GET    | `/api/auth/me`                     | Bearer | Return the currently authenticated user, including `email_verified`. |
+| GET    | `/api/auth/me`                     | Bearer | Return the currently authenticated user, including `email_verified` and the profile fields (`phone`, `major`, `bio`, `skills`, `availability`). `availability` is returned as an array of day codes, e.g. `["mon","wed","fri"]`. |
+| PUT    | `/api/auth/me`                     | Bearer | Update the caller's editable profile fields. Body keys: `phone`, `major`, `bio`, `skills`, `availability` (all optional). Fields omitted from the body are left unchanged; fields present with an empty string or empty array are cleared. `availability` must be an array of day codes drawn from `{mon,tue,wed,thu,fri,sat,sun}`. On success returns the updated `{ user }` in the same shape as `GET /me`. |
 | GET    | `/api/auth/verify-email?token=…`   | —      | Validate a verification token and mark the corresponding account verified. Returns `{ ok: true, email }` on success, or an error if the token is missing/invalid/expired. Idempotent: hitting it twice returns `{ ok: true, alreadyVerified: true }`. |
 | POST   | `/api/auth/resend-verification`    | Bearer | Issue a fresh verification token for the calling user and re-send the email. |
 | POST   | `/api/auth/forgot-password`        | —      | Begin a password reset. Body: `{ email }`. Always returns `{ ok: true }` whether or not the email matches an account, so the endpoint can't be used to enumerate registered emails. If the email matches, a 1-hour reset token is issued and emailed (or console-logged in dev). |
@@ -248,15 +257,17 @@ volunteer-coordination-portal/
     ├── schema.sql                  # creates the career_center DB + users + events tables
     ├── migrations/
     │   ├── 001_add_email_verification.sql   # one-shot migration: adds verification columns
-    │   └── 002_add_password_reset.sql       # one-shot migration: adds password-reset columns
+    │   ├── 002_add_password_reset.sql       # one-shot migration: adds password-reset columns
+    │   └── 003_add_profile_fields.sql       # one-shot migration: adds phone/major/bio/skills/availability
     ├── scripts/
-    │   └── seed-events.js          # populates the events table (npm run seed)
+    │   ├── seed-events.js          # populates the events table (npm run seed)
+    │   └── migrate.js              # runs a .sql migration through the server's DB pool (npm run migrate -- <file>)
     └── src/
         ├── index.js                # Express bootstrap, mounts API routes + static files
         ├── db.js                   # mysql2/promise pool
         ├── email.js                # nodemailer wrapper (console mode in dev, SMTP in prod)
         └── routes/
-            ├── auth.js             # signup / login / me / verify-email / resend-verification / forgot-password / reset-password
+            ├── auth.js             # signup / login / me (GET + PUT) / verify-email / resend-verification / forgot-password / reset-password
             └── events.js
 ```
 
