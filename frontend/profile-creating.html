@@ -3,22 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CSUS Career Center Volunteer – Profile</title>
+  <title>CSUS Career Center – Profile</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ── Design tokens matching the CSUS Career Center green/gold branding ── */
     :root {
-      --green-dark: #3a5a2e;
-      --green-mid: #4a7a3a;
-      --green-light: #f0f4ee;
-      --text: #1a1a1a;
-      --muted: #6b7280;
-      --border: #d1d5db;
-      --white: #ffffff;
-      --error: #dc2626;
-      --success: #16a34a;
-      --bg: #fafaf9;
+      --green-dark:  #1e4620;   /* primary nav/header dark green */
+      --green-mid:   #2d6a30;
+      --green-light: #eef4ee;
+      --gold:        #f5c518;   /* CSUS gold accent (stars) */
+      --text:        #1a1a1a;
+      --muted:       #6b7280;
+      --border:      #d1d5db;
+      --white:       #ffffff;
+      --error:       #dc2626;
+      --success:     #16a34a;
+      --bg:          #f5f5f5;
+      --sidebar-w:   72px;
     }
 
     body {
@@ -26,442 +29,1245 @@
       min-height: 100vh;
       background: var(--bg);
       color: var(--text);
-    }
-
-    .top-nav {
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 40px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
     }
 
-    .brand-mini {
-      font-family: 'Poppins', sans-serif;
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .nav-user {
+    /* ─────────────────────────────────────────────
+       TOP HEADER BAR  (dark green + gold stars)
+    ───────────────────────────────────────────── */
+    .top-bar {
+      background: var(--green-dark);
+      height: 56px;
       display: flex;
       align-items: center;
-      gap: 16px;
-      font-size: 0.9rem;
-      color: var(--muted);
+      padding: 0 20px;
+      gap: 12px;
+      flex-shrink: 0;
     }
 
-    .nav-user strong {
-      color: var(--text);
-      font-weight: 500;
-    }
-
-    .btn-logout {
-      background: transparent;
-      border: 1px solid var(--border);
-      padding: 7px 14px;
-      border-radius: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
-      color: var(--text);
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .btn-logout:hover {
-      border-color: var(--green-dark);
-      background: var(--green-light);
-    }
-
-    .profile-container {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 48px 32px 80px;
-      animation: fadeUp 0.5s ease both;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .page-header { margin-bottom: 28px; }
-    .page-header h1 {
+    /* Brand label in top-left */
+    .brand {
       font-family: 'Poppins', sans-serif;
-      font-size: 28px;
-      font-weight: 600;
-      color: var(--text);
-    }
-    .page-header p {
-      margin-top: 6px;
-      font-size: 0.95rem;
-      color: var(--muted);
-      font-weight: 300;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+      white-space: nowrap;
+      z-index: 1;
     }
 
-    .card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+    /* Decorative gold stars scattered across the top bar */
+    .stars-row {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 10px;
       overflow: hidden;
     }
-
-    .avatar-row {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding: 28px 32px;
-      background: linear-gradient(135deg, var(--green-light) 0%, #e6ede2 100%);
+    .star {
+      color: var(--gold);
+      opacity: 0.9;
+      animation: starPop 0.4s ease both;
+    }
+    /* Stagger each star's entrance with varied sizes */
+    .star:nth-child(1)  { animation-delay: 0.05s; font-size: 22px; }
+    .star:nth-child(2)  { animation-delay: 0.1s;  font-size: 16px; }
+    .star:nth-child(3)  { animation-delay: 0.15s; font-size: 26px; }
+    .star:nth-child(4)  { animation-delay: 0.2s;  font-size: 18px; }
+    .star:nth-child(5)  { animation-delay: 0.25s; font-size: 22px; }
+    .star:nth-child(6)  { animation-delay: 0.3s;  font-size: 14px; }
+    .star:nth-child(7)  { animation-delay: 0.35s; font-size: 28px; }
+    .star:nth-child(8)  { animation-delay: 0.4s;  font-size: 20px; }
+    @keyframes starPop {
+      from { opacity: 0; transform: scale(0.5); }
+      to   { opacity: 0.9; transform: scale(1); }
     }
 
-    .avatar {
-      width: 72px;
-      height: 72px;
+    /* Small avatar circle in top-right corner */
+    .top-avatar {
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      background: var(--green-dark);
-      color: var(--white);
+      background: #555;
+      overflow: hidden;
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Poppins', sans-serif;
-      font-size: 24px;
+      font-size: 13px;
       font-weight: 600;
-      letter-spacing: 0.02em;
+      color: var(--white);
+      cursor: pointer;
+    }
+    .top-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ─────────────────────────────────────────────
+       PAGE BODY: sidebar + main content
+    ───────────────────────────────────────────── */
+    .page-body {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* ── Left sidebar navigation ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0;
+      gap: 4px;
       flex-shrink: 0;
     }
 
-    .avatar-info h2 {
-      font-family: 'Poppins', sans-serif;
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text);
-    }
-    .avatar-info p {
-      font-size: 0.875rem;
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      width: 100%;
+      padding: 10px 4px;
+      cursor: pointer;
       color: var(--muted);
-      margin-top: 2px;
+      font-size: 10px;
+      font-weight: 500;
+      transition: color 0.15s, background 0.15s;
+      text-decoration: none;
+    }
+    .nav-item:hover { color: var(--green-dark); background: var(--green-light); }
+    .nav-item.active { color: var(--green-dark); }
+    .nav-item svg { width: 20px; height: 20px; }
+
+    /* Spacer pushes Notifications + Logout to bottom */
+    .nav-spacer { flex: 1; }
+
+    /* ── Main scrollable content area ── */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
     }
 
-    .form-section { padding: 28px 32px; }
-    .form-section + .form-section { border-top: 1px solid var(--border); }
+    /* ─────────────────────────────────────────────
+       PROFILE TOP CARD  (photo | info | bio)
+    ───────────────────────────────────────────── */
+    .profile-top-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      margin-bottom: 16px;
+      overflow: hidden;
+      animation: fadeUp 0.4s ease both;
+    }
 
-    .section-title {
+    /* ── Photo column (left) ── */
+    .photo-col {
+      padding: 24px 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Circular profile photo wrapper — clicking it opens the file picker */
+    .profile-photo-wrap {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #c0cfe0;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .profile-photo-wrap:hover { opacity: 0.85; }
+
+    /* Initials avatar (shown when no photo is uploaded) */
+    .initials-avatar {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #7a9bb5;
+      color: var(--white);
       font-family: 'Poppins', sans-serif;
-      font-size: 15px;
+      font-size: 26px;
       font-weight: 600;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-    .section-subtitle {
-      font-size: 0.85rem;
-      color: var(--muted);
-      font-weight: 300;
-      margin-bottom: 20px;
     }
 
-    .field-grid {
+    /* Visible "Edit Photo" button below the circular photo */
+    .btn-edit-photo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-edit-photo:hover { border-color: var(--green-dark); background: var(--green-light); }
+
+    /* The actual <input type="file"> is invisible; it's triggered programmatically */
+    #photo-input { display: none; }
+
+    /* ── Info column (center) ── */
+    .info-col {
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .info-col h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    /* "Volunteer Student" role label */
+    .volunteer-badge {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    /* A single row with an icon + value + optional edit pencil */
+    .detail-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .detail-row svg { color: var(--muted); flex-shrink: 0; }
+
+    /* Small pencil button inside each editable detail-row */
+    .edit-inline-btn {
+      margin-left: 4px;
+      color: var(--muted);
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      display: inline-flex;
+      transition: color 0.15s;
+    }
+    .edit-inline-btn:hover { color: var(--green-dark); }
+
+    /* The inline edit row (input + save/cancel icons); hidden by default */
+    .inline-input-row {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .inline-input-row input {
+      flex: 1;
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
+      outline: none;
+    }
+    .inline-input-row input:focus { border-color: var(--green-dark); }
+    .inline-input-row button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+    .save-icon  { color: var(--success); }
+    .save-icon:hover  { background: #e8f5e9; }
+    .cancel-icon { color: var(--error); }
+    .cancel-icon:hover { background: #fdecea; }
+
+    /* ── Bio column (right) ── */
+    .bio-col {
+      padding: 18px 20px;
+      border-left: 1px solid var(--border);
+      min-width: 200px;
+      max-width: 260px;
+      position: relative;
+    }
+    .bio-col h4 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    /* Pencil icon button in the bio heading */
+    .bio-col h4 button {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      color: var(--muted);
+      display: inline-flex;
+    }
+    .bio-col h4 button:hover { color: var(--green-dark); }
+
+    /* Read-only bio text; preserves line breaks */
+    #bio-display {
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    /* Character counter anchored to the bottom-right of the bio column */
+    .bio-char-count {
+      position: absolute;
+      bottom: 10px;
+      right: 14px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Edit mode textarea + action buttons for bio (hidden until edit is triggered) */
+    #bio-edit-wrap { display: none; }
+    #bio-textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      resize: vertical;
+      outline: none;
+    }
+    #bio-textarea:focus { border-color: var(--green-dark); }
+
+    .bio-edit-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    /* ─────────────────────────────────────────────
+       LOWER GRID: Upcoming Events | Edit Profile
+    ───────────────────────────────────────────── */
+    .lower-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
+      animation: fadeUp 0.4s 0.08s ease both;
     }
 
-    .field {
+    /* Generic card panel */
+    .panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    /* Panel top header row (title + action link/buttons) */
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px 10px;
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+    }
+    .panel-header h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    /* "View All" hyperlink in the Events panel header */
+    .view-all-link {
+      font-size: 12px;
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .view-all-link:hover { text-decoration: underline; }
+
+    /* ── Upcoming Events list ── */
+    .events-list { padding: 0 18px 16px; }
+    .event-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .event-item:last-child { border-bottom: none; }
+    .event-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .event-time { font-size: 11.5px; color: var(--muted); }
+
+    /* ── Edit Profile panel body ── */
+    .edit-panel-body { padding: 14px 18px 18px; }
+    .edit-panel-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* Individual form field wrapper */
+    .form-field {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
+      margin-bottom: 12px;
     }
-    .field.full { grid-column: 1 / -1; }
-
-    label {
-      font-size: 0.875rem;
+    .form-field label {
+      font-size: 12px;
       font-weight: 500;
       color: var(--text);
     }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    textarea {
-      width: 100%;
-      padding: 11px 16px;
+    .form-field input {
+      padding: 9px 12px;
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 6px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
+      font-size: 13px;
       color: var(--text);
-      background: var(--white);
-      transition: border-color 0.2s, box-shadow 0.2s;
+      background: var(--bg);
       outline: none;
-      resize: vertical;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    textarea { min-height: 90px; }
-    input::placeholder, textarea::placeholder { color: #b0b7c3; }
-    input:focus, textarea:focus {
+    .form-field input:focus {
       border-color: var(--green-dark);
-      box-shadow: 0 0 0 3px rgba(58, 90, 46, 0.1);
+      box-shadow: 0 0 0 3px rgba(30, 70, 32, 0.1);
+      background: var(--white);
     }
-
-    input[readonly] {
-      background: #f5f5f4;
+    /* Read-only fields (like primary email) appear greyed out */
+    .form-field input[readonly] {
       color: var(--muted);
       cursor: not-allowed;
+      background: #efefef;
     }
 
-    .day-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 4px;
-    }
-    .day-chip {
-      padding: 8px 16px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: var(--white);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
-      color: var(--text);
-      cursor: pointer;
-      transition: all 0.15s;
-      user-select: none;
-    }
-    .day-chip:hover { border-color: var(--green-mid); }
-    .day-chip.active {
-      background: var(--green-dark);
-      color: var(--white);
-      border-color: var(--green-dark);
-    }
-
-    .action-row {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      padding: 20px 32px;
-      border-top: 1px solid var(--border);
-      background: #fafaf9;
-    }
-
+    /* ── Shared button styles ── */
     .btn {
-      padding: 11px 22px;
-      border-radius: 8px;
+      padding: 8px 18px;
+      border-radius: 6px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
+      font-size: 13px;
       font-weight: 500;
       cursor: pointer;
       border: 1px solid transparent;
-      transition: background 0.2s, transform 0.1s, box-shadow 0.2s, border-color 0.2s;
-      letter-spacing: 0.01em;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
     }
-    .btn:active { transform: scale(0.99); }
+    .btn:active { transform: scale(0.98); }
 
-    .btn-primary {
-      background: var(--green-dark);
-      color: var(--white);
-    }
-    .btn-primary:hover {
-      background: #2d4724;
-      box-shadow: 0 4px 14px rgba(58,90,46,0.25);
-    }
-
-    .btn-secondary {
+    /* Secondary (cancel) button */
+    .btn-cancel {
       background: var(--white);
       border-color: var(--border);
       color: var(--text);
     }
-    .btn-secondary:hover {
+    .btn-cancel:hover { border-color: var(--green-dark); background: var(--green-light); }
+
+    /* Save button: greyed out when no changes, active (green) when dirty */
+    .btn-save {
+      background: #b0c4b0;
+      color: var(--white);
+      border-color: #b0c4b0;
+    }
+    .btn-save.active {
+      background: var(--green-dark);
       border-color: var(--green-dark);
-      background: var(--green-light);
+    }
+    .btn-save.active:hover {
+      background: var(--green-mid);
+      box-shadow: 0 4px 12px rgba(30,70,32,0.25);
     }
 
-    .error-msg {
-      font-size: 0.8rem;
-      color: var(--error);
-      display: none;
-    }
-    .error-msg.show { display: block; }
-
+    /* ── Toast notification (bottom-right) ── */
     .toast {
       position: fixed;
       bottom: 24px;
       right: 24px;
-      padding: 14px 22px;
+      padding: 12px 20px;
       background: var(--success);
       color: var(--white);
       border-radius: 8px;
-      font-size: 0.9rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
       opacity: 0;
-      transform: translateY(12px);
+      transform: translateY(10px);
       transition: opacity 0.25s, transform 0.25s;
       pointer-events: none;
-      z-index: 100;
+      z-index: 200;
     }
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
+    .toast.show  { opacity: 1; transform: translateY(0); }
+    .toast.error { background: var(--error); }
+
+    /* ── Page entrance animation ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 640px) {
-      .top-nav { padding: 14px 20px; }
-      .profile-container { padding: 28px 16px 60px; }
-      .avatar-row { padding: 22px 20px; gap: 14px; }
-      .avatar { width: 56px; height: 56px; font-size: 20px; }
-      .form-section { padding: 22px 20px; }
-      .action-row { padding: 16px 20px; flex-direction: column-reverse; }
-      .action-row .btn { width: 100%; }
-      .field-grid { grid-template-columns: 1fr; }
-      .nav-user span:first-child { display: none; }
+    /* ── Responsive: stack panels on narrow screens ── */
+    @media (max-width: 700px) {
+      .sidebar { display: none; }
+      .profile-top-card { grid-template-columns: 1fr; }
+      .bio-col { border-left: none; border-top: 1px solid var(--border); max-width: 100%; }
+      .lower-grid { grid-template-columns: 1fr; }
     }
   </style>
+  <script src="profile-storage.js"></script>
 </head>
 <body>
 
-  <header class="top-nav">
-    <div class="brand-mini">CSUS Career Center Volunteer</div>
-    <div class="nav-user">
-      <span>Signed in as <strong id="nav-email">jane.hornet@csus.edu</strong></span>
-      <button class="btn-logout" onclick="handleLogout()">Log out</button>
+  <!-- ════════════════════════════════════════════
+       TOP HEADER BAR
+       Dark green background + CSUS brand + gold stars + avatar
+  ═════════════════════════════════════════════ -->
+  <header class="top-bar">
+    <!-- Brand text block (top-left) -->
+    <div class="brand">CSUS<br>Career<br>center</div>
+
+    <!-- Gold star decorations (purely visual, aria-hidden) -->
+    <div class="stars-row" aria-hidden="true">
+      <span class="star">★</span>
+      <span class="star">★</span>
+      <span class="star">★</span>
+      <span class="star">★</span>
+      <span class="star">★</span>
+      <span class="star">★</span>
+      <span class="star">★</span>
+      <span class="star">★</span>
     </div>
+
+    <!-- Small avatar in top-right; shows initials or uploaded photo -->
+    <div class="top-avatar" id="top-avatar" title="Your profile" onclick="handleProfile()">MJ</div>
   </header>
 
-  <main class="profile-container">
-    <div class="page-header">
-      <h1>Profile Settings</h1>
-      <p>Update your personal information and availability.</p>
-    </div>
+  <!-- ════════════════════════════════════════════
+       PAGE BODY (sidebar + main)
+  ═════════════════════════════════════════════ -->
+  <div class="page-body">
 
-    <div class="card">
+    <!-- ── LEFT SIDEBAR NAVIGATION ── -->
+    <nav class="sidebar">
 
-      <div class="avatar-row">
-        <div class="avatar" id="avatar">JH</div>
-        <div class="avatar-info">
-          <h2 id="display-name">Jane Hornet</h2>
-          <p id="display-email">jane.hornet@csus.edu</p>
+      <!-- Home link -->
+      <a class="nav-item active" href="csus-landing-page-events.html" title="Home">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M3 9.75L12 3l9 6.75V21H15v-6H9v6H3V9.75z"/>
+        </svg>
+        Home
+      </a>
+
+      <!-- Messaging link -->
+      <a class="nav-item" href="#" title="Messaging">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
+        Messaging
+      </a>
+
+      <!-- My Events link -->
+      <a class="nav-item" href="#" title="My Events">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <path d="M16 2v4M8 2v4M3 10h18"/>
+        </svg>
+        My Events
+      </a>
+
+      <!-- Calendar link -->
+      <a class="nav-item" href="#" title="Calendar">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
+        </svg>
+        Calendar
+      </a>
+
+      <!-- Spacer: pushes bottom nav items down -->
+      <div class="nav-spacer"></div>
+
+      <!-- Notifications link -->
+      <a class="nav-item" href="#" title="Notifications">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/>
+        </svg>
+        Notifications
+      </a>
+
+      <!-- Logout link — calls handleLogout() to clear tokens before redirect -->
+      <a class="nav-item" href="#" title="Logout" onclick="handleLogout(event)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/>
+        </svg>
+        Logout
+      </a>
+    </nav>
+
+    <!-- ── MAIN CONTENT ── -->
+    <main class="main">
+
+      <!-- ════════════════════════════════════════
+           PROFILE TOP CARD
+           Three columns: Photo | Info | Bio
+      ═════════════════════════════════════════ -->
+      <div class="profile-top-card">
+
+        <!-- LEFT: Profile photo + Edit Photo button -->
+        <div class="photo-col">
+          <!--
+            Clicking the photo wrap or the button both trigger the hidden file input.
+            When a photo is loaded it replaces the initials avatar.
+          -->
+          <div class="profile-photo-wrap"
+               onclick="document.getElementById('photo-input').click()"
+               title="Click to change photo">
+            <!-- Default initials avatar; swapped out by JS after photo upload -->
+            <div class="initials-avatar" id="photo-initials">MJ</div>
+          </div>
+
+          <!-- Hidden file input — accepts image files only -->
+          <input type="file" id="photo-input" accept="image/*" onchange="handlePhotoUpload(event)"/>
+
+          <!-- Visible camera + "Edit Photo" button -->
+          <button class="btn-edit-photo" onclick="document.getElementById('photo-input').click()">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+            Edit Photo
+          </button>
         </div>
-      </div>
 
-      <section class="form-section">
-        <h3 class="section-title">Personal Information</h3>
-        <p class="section-subtitle">This information will be visible to Career Center coordinators.</p>
+        <!-- CENTER: Name, role, and contact details -->
+        <div class="info-col">
 
-        <div class="field-grid">
-          <div class="field">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" autocomplete="name" value="Jane Hornet"/>
-            <span class="error-msg" id="name-error">Name is required.</span>
+          <!-- Full display name (updated when profile is saved) -->
+          <h2 id="display-name">Merry Johnson</h2>
+          <div class="volunteer-badge">Volunteer Student</div>
+
+          <!-- Email row: read-only (comes from auth system) -->
+          <div class="detail-row">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z"/>
+              <polyline points="22,6 12,12 2,6"/>
+            </svg>
+            <span id="display-email">merryJ@csus.edu</span>
           </div>
 
-          <div class="field">
-            <label for="email">Email address</label>
-            <input type="email" id="email" value="jane.hornet@csus.edu" readonly/>
+          <!-- Phone row: pencil button reveals inline input for editing -->
+          <div class="detail-row" id="phone-detail-row">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.09 5.18 2 2 0 015.07 3h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.09 10.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 17.92l-.08-1z"/>
+            </svg>
+            <span id="phone-display">(xxx) xxx-xxxx</span>
+            <button class="edit-inline-btn" onclick="startInlineEdit('phone')" title="Edit phone">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </button>
+          </div>
+          <!-- Inline phone edit row (hidden until pencil clicked) -->
+          <div class="inline-input-row" id="phone-edit-row">
+            <input type="tel" id="phone-inline-input" placeholder="(916) 555-0123"/>
+            <button class="save-icon" onclick="saveInlineEdit('phone')" title="Save">✔</button>
+            <button class="cancel-icon" onclick="cancelInlineEdit('phone')" title="Cancel">✖</button>
           </div>
 
-          <div class="field">
-            <label for="phone">Phone</label>
-            <input type="tel" id="phone" autocomplete="tel" placeholder="(916) 555-0123"/>
+          <!-- Location row: pencil button reveals inline input for editing -->
+          <div class="detail-row" id="location-detail-row">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span id="location-display">Sacramento, CA</span>
+            <button class="edit-inline-btn" onclick="startInlineEdit('location')" title="Edit location">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </button>
+          </div>
+          <!-- Inline location edit row (hidden until pencil clicked) -->
+          <div class="inline-input-row" id="location-edit-row">
+            <input type="text" id="location-inline-input" placeholder="City, State"/>
+            <button class="save-icon" onclick="saveInlineEdit('location')" title="Save">✔</button>
+            <button class="cancel-icon" onclick="cancelInlineEdit('location')" title="Cancel">✖</button>
           </div>
 
-          <div class="field">
-            <label for="major">Major / Program</label>
-            <input type="text" id="major" placeholder="Computer Science"/>
-          </div>
-
-          <div class="field full">
-            <label for="bio">About you</label>
-            <textarea id="bio" placeholder="Tell us a bit about yourself and why you want to volunteer."></textarea>
-          </div>
-
-          <div class="field full">
-            <label for="skills">Skills & Interests</label>
-            <input type="text" id="skills" placeholder="e.g. tutoring, event setup, social media, tabling"/>
+          <!-- Member-since row: read-only, pulled from server's created_at -->
+          <div class="detail-row">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <path d="M16 2v4M8 2v4M3 10h18"/>
+            </svg>
+            <span id="display-since" style="font-size:12px;color:var(--muted)">Member since January 8th 2026</span>
           </div>
         </div>
-      </section>
 
-      <section class="form-section">
-        <h3 class="section-title">Weekly Availability</h3>
-        <p class="section-subtitle">Select the days you're generally available to volunteer.</p>
+        <!-- RIGHT: Bio section (click pencil to enter edit mode) -->
+        <div class="bio-col">
+          <h4>
+            Bio
+            <!-- Pencil icon opens the bio textarea for editing -->
+            <button onclick="startBioEdit()" title="Edit bio">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </button>
+          </h4>
 
-        <div class="day-chips" id="day-chips">
-          <div class="day-chip" data-day="mon">Mon</div>
-          <div class="day-chip" data-day="tue">Tue</div>
-          <div class="day-chip" data-day="wed">Wed</div>
-          <div class="day-chip" data-day="thu">Thu</div>
-          <div class="day-chip" data-day="fri">Fri</div>
-          <div class="day-chip" data-day="sat">Sat</div>
-          <div class="day-chip" data-day="sun">Sun</div>
+          <!-- Read-only bio text display -->
+          <div id="bio-display">I'm dedicated to getting the work done and furthermore, ready for any additional work that may be needed!
+
+My hours of availability are usually Mondays-Fridays past 2PM.</div>
+
+          <!-- Bio edit mode: textarea + Save / Cancel buttons (hidden by default) -->
+          <div id="bio-edit-wrap">
+            <textarea id="bio-textarea" maxlength="400" oninput="updateBioCount()"></textarea>
+            <div class="bio-edit-actions">
+              <button class="btn btn-cancel" onclick="cancelBioEdit()">Cancel</button>
+              <button class="btn btn-save active" onclick="saveBioEdit()">Save</button>
+            </div>
+          </div>
+
+          <!-- Character count indicator, e.g. "27/400" -->
+          <div class="bio-char-count" id="bio-char-count">27/400</div>
         </div>
-      </section>
+      </div><!-- /.profile-top-card -->
 
-      <div class="action-row">
-        <button class="btn btn-secondary" onclick="handleCancel()">Cancel</button>
-        <button class="btn btn-primary" id="save-btn" onclick="handleSave()">Save Changes</button>
-      </div>
-    </div>
-  </main>
+      <!-- ════════════════════════════════════════
+           LOWER GRID
+           Left panel:  Upcoming Events
+           Right panel: Edit Profile form
+      ═════════════════════════════════════════ -->
+      <div class="lower-grid">
 
-  <div class="toast" id="toast">Profile updated successfully</div>
+        <!-- ── UPCOMING EVENTS PANEL ── -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Upcoming Events</h3>
+            <!-- "View All" takes the user to the main events listing page -->
+            <a class="view-all-link" href="csus-landing-page-events.html">View All</a>
+          </div>
+          <!-- Event items are rendered dynamically by renderUpcomingEvents() -->
+          <div class="events-list" id="events-list"></div>
+        </div>
 
+        <!-- ── EDIT PROFILE PANEL ── -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Edit Profile</h3>
+            <!-- Cancel: resets form fields to last-saved values -->
+            <button class="btn btn-cancel"
+                    id="header-cancel-btn"
+                    onclick="handleCancel()"
+                    style="padding:5px 14px;font-size:12px;">cancel</button>
+            <!-- Save: greyed out until user edits a field; activates via markDirty() -->
+            <button class="btn btn-save"
+                    id="header-save-btn"
+                    onclick="handleSave()">Save changes</button>
+          </div>
+
+          <div class="edit-panel-body">
+            <p class="edit-panel-subtitle">Update your personal information and bio</p>
+
+            <!-- Backup Email field -->
+            <div class="form-field">
+              <label for="backup-email">Backup Email</label>
+              <input type="email"
+                     id="backup-email"
+                     autocomplete="email"
+                     placeholder="alternate@email.com"
+                     oninput="markDirty()"/>
+            </div>
+
+            <!-- Phone field (mirrors the inline-edit phone in the info column) -->
+            <div class="form-field">
+              <label for="phone-panel">Phone</label>
+              <input type="tel"
+                     id="phone-panel"
+                     autocomplete="tel"
+                     placeholder="(916) 555-0123"
+                     oninput="markDirty()"/>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.lower-grid -->
+    </main>
+  </div><!-- /.page-body -->
+
+  <!-- Toast notification (green success / red error) -->
+  <div class="toast" id="toast"></div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       JAVASCRIPT — all functions documented with purpose + params
+  ════════════════════════════════════════════════════════════ -->
   <script>
-    // TODO: re-enable auth guard once login flow is fully connected
-    // const token = localStorage.getItem('token');
-    // if (!token) { window.location.href = 'login.html'; }
 
-    // If a user is logged in, populate name/email from localStorage
-    const cached = JSON.parse(localStorage.getItem('user') || '{}');
-    if (cached.name) {
-      document.getElementById('display-name').textContent = cached.name;
-      document.getElementById('name').value = cached.name;
-      document.getElementById('avatar').textContent = cached.name
-        .trim().split(/\s+/).slice(0,2).map(s => s[0]).join('').toUpperCase();
-    }
-    if (cached.email) {
-      document.getElementById('display-email').textContent = cached.email;
-      document.getElementById('email').value = cached.email;
-      document.getElementById('nav-email').textContent = cached.email;
+    /* ─────────────────────────────────────────────
+       1. CONSTANTS & CENTRAL STATE
+    ───────────────────────────────────────────── */
+
+    /** Base URL for the Express API. Update if the server runs on a different port. */
+    const API = 'http://localhost:3001/api';
+
+    /**
+     * Central in-memory representation of the user's profile.
+     * Populated from localStorage during init() and kept in sync with the UI.
+     * Persisted back to localStorage on every save action.
+     */
+    const profile = {
+      name:        'Merry Johnson',
+      email:       'merryJ@csus.edu',
+      phone:       '',
+      location:    'Sacramento, CA',
+      bio:         "I'm dedicated to getting the work done and furthermore, ready for any additional work that may be needed!\n\nMy hours of availability are usually Mondays-Fridays past 2PM.",
+      backupEmail: '',
+      photoUrl:    'assets/images/Lady-in-Black.png', // default profile photo asset
+      createdAt:   'January 8th 2026',
+    };
+
+    /**
+     * Tracks whether the Edit Profile panel has unsaved changes.
+     * Used to activate / deactivate the Save Changes button.
+     */
+    let isDirty = false;
+
+
+    /* ─────────────────────────────────────────────
+       2. INITIALISATION
+    ───────────────────────────────────────────── */
+
+    /**
+     * Entry point — called once when the page loads.
+     * Merges any persisted profile data from localStorage into `profile`,
+     * then renders all UI elements and the events list.
+     */
+    function init() {
+      // Restore previously saved profile fields
+      const saved = loadProfileData();
+      Object.assign(profile, saved);
+
+      // Overlay basic user info stored by the login flow
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (user.name)  profile.name  = user.name;
+      if (user.email) profile.email = user.email;
+
+      renderProfile();
+      renderUpcomingEvents();
     }
 
-    // Toggle day chips
-    document.getElementById('day-chips').addEventListener('click', e => {
-      if (e.target.classList.contains('day-chip')) {
-        e.target.classList.toggle('active');
+    /**
+     * Pushes all `profile` values into the DOM.
+     * Should be called after any change to profile data so the UI stays consistent.
+     */
+    function renderProfile() {
+      document.getElementById('display-name').textContent    = profile.name;
+      document.getElementById('display-email').textContent   = profile.email;
+      document.getElementById('phone-display').textContent   = profile.phone || '(xxx) xxx-xxxx';
+      document.getElementById('phone-panel').value           = profile.phone;
+      document.getElementById('location-display').textContent = profile.location || 'Sacramento, CA';
+      document.getElementById('display-since').textContent   = 'Member since ' + (profile.createdAt || '—');
+      document.getElementById('backup-email').value          = profile.backupEmail;
+
+      updateBioDisplay();
+
+      // Render photo or fallback initials in both avatar slots
+      if (profile.photoUrl) {
+        replacePhotoWithImage(profile.photoUrl);
+      } else {
+        renderInitialsAvatar(profile.name);
       }
-    });
-
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2500);
+      renderTopAvatar(profile.name, profile.photoUrl);
     }
 
-    function handleSave() {
-      const name = document.getElementById('name').value.trim();
-      const nameError = document.getElementById('name-error');
-      nameError.classList.remove('show');
 
-      if (!name) {
-        nameError.classList.add('show');
+    /* ─────────────────────────────────────────────
+       3. PHOTO UPLOAD & AVATAR RENDERING
+    ───────────────────────────────────────────── */
+
+    /**
+     * Fired when the user selects a file via the hidden <input type="file">.
+     * Reads the image as a base64 Data URL, stores it in `profile.photoUrl`,
+     * updates both avatar slots, and persists to localStorage.
+     *
+     * @param {Event} e – the 'change' event from the file input
+     */
+    function handlePhotoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (ev) {
+        profile.photoUrl = ev.target.result;          // store Data URL
+        replacePhotoWithImage(profile.photoUrl);       // update large circle
+        renderTopAvatar(profile.name, profile.photoUrl); // update header mini-avatar
+        saveProfileData(profile);
+        showToast('Photo updated!');
+      };
+      reader.readAsDataURL(file); // triggers reader.onload when done
+    }
+
+    /**
+     * Replaces whatever is inside .profile-photo-wrap with an <img> tag.
+     * Used after a photo is uploaded or loaded from localStorage.
+     *
+     * @param {string} src – Image source (Data URL or remote URL)
+     */
+    function replacePhotoWithImage(src) {
+      document.querySelector('.profile-photo-wrap').innerHTML =
+        `<img src="${src}" alt="Profile photo"
+              style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`;
+    }
+
+    /**
+     * Renders an initials-based placeholder avatar inside .profile-photo-wrap.
+     * Extracts up to 2 initials from the user's full name.
+     *
+     * @param {string} name – The user's full name
+     */
+    function renderInitialsAvatar(name) {
+      const initials = name.trim().split(/\s+/).slice(0, 2).map(s => s[0]).join('').toUpperCase();
+      document.querySelector('.profile-photo-wrap').innerHTML =
+        `<div class="initials-avatar" id="photo-initials">${initials}</div>`;
+    }
+
+    /**
+     * Updates the small top-right header avatar to mirror the main photo or initials.
+     *
+     * @param {string}      name – User's full name (for initials fallback)
+     * @param {string|null} src  – Photo Data URL, or null if no photo
+     */
+    function renderTopAvatar(name, src) {
+      const el = document.getElementById('top-avatar');
+      if (src) {
+        el.innerHTML = `<img src="${src}" alt="avatar"
+          style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`;
+      } else {
+        el.textContent = name.trim().split(/\s+/).slice(0, 2).map(s => s[0]).join('').toUpperCase();
+      }
+    }
+
+
+    /* ─────────────────────────────────────────────
+       4. BIO EDITING
+    ───────────────────────────────────────────── */
+
+    /**
+     * Switches the bio column into edit mode.
+     * Hides the read-only #bio-display and shows the #bio-edit-wrap textarea,
+     * pre-filled with the current bio text.
+     */
+    function startBioEdit() {
+      document.getElementById('bio-display').style.display   = 'none';
+      document.getElementById('bio-edit-wrap').style.display = 'block';
+      const ta = document.getElementById('bio-textarea');
+      ta.value = profile.bio;
+      updateBioCount(); // sync the character counter immediately
+      ta.focus();
+    }
+
+    /**
+     * Commits the textarea's value to `profile.bio`, persists to localStorage,
+     * and switches the bio column back to read-only display.
+     */
+    function saveBioEdit() {
+      profile.bio = document.getElementById('bio-textarea').value.trim();
+      persistProfile();
+      updateBioDisplay();
+      closeBioEditMode();
+      showToast('Bio saved!');
+    }
+
+    /**
+     * Discards any in-progress bio edits and returns to read-only display
+     * without touching `profile.bio`.
+     */
+    function cancelBioEdit() {
+      closeBioEditMode();
+    }
+
+    /**
+     * Internal helper: hides the textarea wrapper and restores the display div.
+     */
+    function closeBioEditMode() {
+      document.getElementById('bio-display').style.display   = '';
+      document.getElementById('bio-edit-wrap').style.display = 'none';
+    }
+
+    /**
+     * Keeps the character counter (e.g. "85/400") in sync with the textarea value.
+     * Bound to the textarea's `oninput` event.
+     */
+    function updateBioCount() {
+      const len = document.getElementById('bio-textarea').value.length;
+      document.getElementById('bio-char-count').textContent = `${len}/400`;
+    }
+
+    /**
+     * Refreshes the read-only bio display text and character counter
+     * to reflect the current `profile.bio` value.
+     */
+    function updateBioDisplay() {
+      document.getElementById('bio-display').textContent       = profile.bio;
+      document.getElementById('bio-char-count').textContent    = `${profile.bio.length}/400`;
+    }
+
+
+    /* ─────────────────────────────────────────────
+       5. INLINE FIELD EDITING  (phone | location)
+    ───────────────────────────────────────────── */
+
+    /**
+     * Shows the inline edit row for the given field and populates its input
+     * with the current value from `profile`. Hides the read-only .detail-row.
+     *
+     * @param {'phone'|'location'} field – Which field to edit
+     */
+    function startInlineEdit(field) {
+      document.getElementById(`${field}-detail-row`).style.display = 'none';
+      const row   = document.getElementById(`${field}-edit-row`);
+      const input = document.getElementById(`${field}-inline-input`);
+      row.style.display = 'flex';
+      input.value = field === 'phone' ? profile.phone : profile.location;
+      input.focus();
+    }
+
+    /**
+     * Reads the inline input value, saves it to `profile`, syncs dependent UI
+     * elements (display span, panel input), persists, and restores read-only mode.
+     *
+     * @param {'phone'|'location'} field – Which field was edited
+     */
+    function saveInlineEdit(field) {
+      const value = document.getElementById(`${field}-inline-input`).value.trim();
+
+      if (field === 'phone') {
+        profile.phone = value;
+        document.getElementById('phone-display').textContent = value || '(xxx) xxx-xxxx';
+        document.getElementById('phone-panel').value         = value; // keep Edit Profile panel in sync
+      } else {
+        profile.location = value;
+        document.getElementById('location-display').textContent = value || 'Sacramento, CA';
+      }
+
+      persistProfile();
+      closeInlineEditMode(field);
+      showToast(`${field.charAt(0).toUpperCase() + field.slice(1)} updated!`);
+    }
+
+    /**
+     * Cancels the inline edit without saving any changes.
+     *
+     * @param {'phone'|'location'} field – Which field to cancel
+     */
+    function cancelInlineEdit(field) {
+      closeInlineEditMode(field);
+    }
+
+    /**
+     * Internal helper: hides the inline edit row and re-shows the .detail-row.
+     *
+     * @param {'phone'|'location'} field
+     */
+    function closeInlineEditMode(field) {
+      document.getElementById(`${field}-detail-row`).style.display = '';
+      document.getElementById(`${field}-edit-row`).style.display   = 'none';
+    }
+
+
+    /* ─────────────────────────────────────────────
+       6. EDIT PROFILE PANEL  (backup email + phone)
+    ───────────────────────────────────────────── */
+
+    /**
+     * Marks the Edit Profile panel as having unsaved changes.
+     * Activates (turns green) the Save Changes button.
+     * Bound to `oninput` on each panel field.
+     */
+    function markDirty() {
+      isDirty = true;
+      document.getElementById('header-save-btn').classList.add('active');
+    }
+
+    /**
+     * Validates and saves the Backup Email and Phone fields from the Edit Profile panel.
+     * Updates `profile`, persists locally, then attempts a PUT /api/auth/me request.
+     * Falls back gracefully if the backend is not yet reachable.
+     */
+    async function handleSave() {
+      if (!isDirty) return; // nothing changed — no-op
+
+      const backupEmail = document.getElementById('backup-email').value.trim();
+      const phone       = document.getElementById('phone-panel').value.trim();
+
+      // Validate backup email format (only if a value was entered)
+      if (backupEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(backupEmail)) {
+        showToast('Please enter a valid backup email address.', true);
         return;
       }
 
-      document.getElementById('display-name').textContent = name;
-      document.getElementById('avatar').textContent = name
-        .trim().split(/\s+/).slice(0,2).map(s => s[0]).join('').toUpperCase();
+      // Commit changes to the in-memory profile object
+      profile.backupEmail = backupEmail;
+      profile.phone       = phone;
 
-      // TODO: POST updated fields to backend once PUT /api/auth/me endpoint exists
-      showToast('Profile updated successfully');
+      // Sync inline phone display with the panel value
+      document.getElementById('phone-display').textContent = phone || '(xxx) xxx-xxxx';
+
+      persistProfile(); // write to localStorage immediately
+
+      // Reset dirty state and grey out the Save button again
+      isDirty = false;
+      document.getElementById('header-save-btn').classList.remove('active');
+
+      // ── Attempt to sync with the backend via PUT /api/auth/me ──────────
+      // This endpoint must be added to auth.js (see the updated auth.js file).
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const res = await fetch(`${API}/auth/me`, {
+            method:  'PUT',
+            headers: {
+              'Content-Type':  'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ backup_email: backupEmail, phone }),
+          });
+          if (!res.ok) throw new Error('Server responded with ' + res.status);
+          showToast('Profile saved!');
+        } catch (err) {
+          // Server not running or endpoint not yet implemented — that's okay
+          showToast('Saved locally (server not reachable).');
+        }
+      } else {
+        // No auth token in storage — user hasn't logged in via the API
+        showToast('Profile saved locally!');
+      }
     }
 
+    /**
+     * Resets the Edit Profile panel fields back to their last-saved `profile` values.
+     * Prompts the user first if there are unsaved changes.
+     */
     function handleCancel() {
-      if (confirm('Discard unsaved changes?')) window.location.reload();
+      if (isDirty && !confirm('Discard unsaved changes?')) return;
+      document.getElementById('backup-email').value = profile.backupEmail;
+      document.getElementById('phone-panel').value  = profile.phone;
+      isDirty = false;
+      document.getElementById('header-save-btn').classList.remove('active');
     }
 
-    function handleLogout() {
+
+    /* ─────────────────────────────────────────────
+       7. UPCOMING EVENTS
+    ───────────────────────────────────────────── */
+
+    /**
+     * Populates the Upcoming Events list with static sample data.
+     * In production this would be replaced with a fetch() to GET /api/events
+     * filtered to events the current user is signed up for.
+     */
+    function renderUpcomingEvents() {
+      const events = [
+        { title: 'Bingo & Trivia Nights',  time: '02/10/2026 — 2:00 PM – 5:00 PM' },
+        { title: 'Career Fair',            time: '04/23/2026 — 12:00 PM – 5:00 PM' },
+        { title: 'Academic Tutoring',      time: '04/30/2026 — 10:00 PM – 5:00 PM' },
+      ];
+
+      document.getElementById('events-list').innerHTML = events.map(ev => `
+        <div class="event-item">
+          <div class="event-title">${ev.title}</div>
+          <div class="event-time">${ev.time}</div>
+        </div>
+      `).join('');
+    }
+
+
+    /* ─────────────────────────────────────────────
+       8. PERSISTENCE & AUTH
+    ───────────────────────────────────────────── */
+
+    /**
+     * Serialises the current `profile` object to localStorage.
+     * Called after every save action so data survives page refreshes.
+     * Note: does not store auth tokens — those are handled separately.
+     */
+    function persistProfile() {
+      saveProfileData(profile);
+    }
+
+    /**
+     * Clears all auth and profile data from localStorage, then redirects to login.
+     * Triggered by the Logout item in the sidebar navigation.
+     *
+     * @param {Event} e – click event; preventDefault stops <a> from navigating
+     */
+    function handleLogout(e) {
+      e.preventDefault();
+      if (!confirm('Are you sure you want to log out?')) return;
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      localStorage.removeItem('profileData');
       window.location.href = 'login.html';
     }
+
+
+    /* ─────────────────────────────────────────────
+       9. TOAST HELPER
+    ───────────────────────────────────────────── */
+
+    /**
+     * Briefly displays a notification banner at the bottom-right of the screen.
+     * Auto-dismisses after 2.5 seconds.
+     *
+     * @param {string}  msg     – Message text to display
+     * @param {boolean} isError – Pass true for a red error style; default is green success
+     */
+    function showToast(msg, isError = false) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className   = 'toast' + (isError ? ' error' : '');
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2500);
+    }
+
+
+    /* ─────────────────────────────────────────────
+       10. BOOT
+    ───────────────────────────────────────────── */
+    init();
   </script>
 </body>
 </html>

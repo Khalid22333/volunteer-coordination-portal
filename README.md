@@ -43,6 +43,85 @@ This portal replaces inefficient methods like email announcements and physical s
 - Manage and verify volunteer assignments
 
 ---
+## Recent Updates (Spring 2026)
+
+### 1. Enhanced Profile Creation Page
+**Status:** ✅ Completed
+
+**Structural Changes:**
+- Redesigned `frontend/profile-creating.html` to align with Figma design specifications
+- Integrated profile picture upload and editing functionality
+
+**Implementation Details:**
+- Users can now upload and edit their profile picture directly on the profile creation page
+- All basic user information (name, email, bio, etc.) can be updated and saved persistently
+- User data persists across page navigation, preventing data loss when users navigate to other pages
+
+**Files Modified:**
+- `frontend/profile-creating.html` — Complete redesign with improved UI/UX and profile picture handling
+- `frontend/profile-storage.js` — Enhanced to manage persistent user profile data
+
+---
+
+### 2. Local Data Storage for User Information
+**Status:** ✅ Completed
+
+**Structural Changes:**
+- Implemented local JavaScript file-based storage system in the backend to manage user information across multiple pages
+- Added persistent data layer without requiring database calls for session-level data
+
+**Implementation Details:**
+- User information is now stored in a local JS file managed by the backend
+- Enables seamless data sharing across multiple frontend pages
+- Allows user information to remain accessible even after page redirects or navigation
+- Reduces unnecessary database queries for temporary session data
+
+**Files Modified/Created:**
+- `server/src/db.js` — Updated to include local data storage functions
+- `server/src/index.js` — Enhanced with routes to handle user data persistence
+
+---
+
+### 3. Event Management with Persistent State
+**Status:** ✅ Completed
+
+**Structural Changes:**
+- Updated the events landing page (`csus-landing-page-events.html`) to track user interactions with events
+- Implemented client-side state management for event applications and withdrawals
+
+**Implementation Details:**
+- Users can now apply to events or drop from events with persistent state tracking
+- Event application/dropout status is saved and maintained across page navigation
+- Users won't lose their event preferences when switching between pages
+- Improved user experience by maintaining consistency between frontend and backend event data
+
+**Files Modified:**
+- `frontend/csus-landing-page-events.html` — Enhanced event listing and interaction handling
+- `frontend/profile-storage.js` — Extended to manage event application and dropdown states
+
+---
+
+## Project Structure Updates
+
+```
+frontend/
+  ├── csus-landing-page-events.html (Updated - Event state persistence)
+  ├── profile-creating.html (Redesigned - Matches Figma design)
+  ├── profile-storage.js (Enhanced - User data & event state management)
+  ├── login.html
+  └── assets/
+      └── images/
+
+server/
+  ├── src/
+  │   ├── db.js (Updated - Local data storage)
+  │   ├── index.js (Enhanced - Event and user data routes)
+  │   └── routes/
+  │       └── auth.js
+  └── package.json
+```
+
+---
 ## Tech Stack
 
 | Layer | Technology |
