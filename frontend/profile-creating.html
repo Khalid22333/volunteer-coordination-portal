@@ -586,20 +586,58 @@
     throw new Error('redirecting to login');
   }
 
-  // ── Hydrate name/email/initials from the cached user (set at login). ──
-  const cached = getUser() || {};
-  if (cached.name) {
-    document.getElementById('display-name').textContent = cached.name;
-    document.getElementById('name').value = cached.name;
-    document.getElementById('profile-pic').textContent = cached.name
-      .trim().split(/\s+/).slice(0, 2).map(s => s[0]).join('').toUpperCase();
-  }
-  if (cached.email) {
-    document.getElementById('display-email').textContent = cached.email;
-    document.getElementById('email').value = cached.email;
+  // ── Helpers ──────────────────────────────────────────────────────────
+  function setHeaderCard(user) {
+    if (user.name) {
+      document.getElementById('display-name').textContent = user.name;
+      document.getElementById('name').value = user.name;
+      document.getElementById('profile-pic').textContent = user.name
+        .trim().split(/\s+/).slice(0, 2).map(s => s[0]).join('').toUpperCase();
+    }
+    if (user.email) {
+      document.getElementById('display-email').textContent = user.email;
+      document.getElementById('email').value = user.email;
+    }
   }
 
-  // ── Day chip toggle (UI-only state for now). ──────────────────────────
+  function setFormFields(user) {
+    document.getElementById('phone').value  = user.phone  || '';
+    document.getElementById('major').value  = user.major  || '';
+    document.getElementById('bio').value    = user.bio    || '';
+    document.getElementById('skills').value = user.skills || '';
+
+    // Availability comes back as an array of day codes. Activate the
+    // matching chips, deactivate the rest.
+    const active = new Set(user.availability || []);
+    document.querySelectorAll('.day-chip').forEach(chip => {
+      chip.classList.toggle('active', active.has(chip.dataset.day));
+    });
+  }
+
+  // First paint from the cached user so the page doesn't flash empty
+  // while the network call is in flight.
+  const cached = getUser() || {};
+  setHeaderCard(cached);
+  setFormFields(cached);
+
+  // Then refresh from the server so we show the canonical truth (the
+  // cached user might be stale — set at login, before any edits).
+  (async () => {
+    try {
+      const res = await fetch('/api/auth/me', { headers: authHeader() });
+      if (!res.ok) return; // Token expired? requireLogin would have caught it.
+      const data = await res.json();
+      if (data.user) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+        setHeaderCard(data.user);
+        setFormFields(data.user);
+      }
+    } catch (err) {
+      console.error('Could not load profile:', err);
+    }
+  })();
+
+  // ── Day chip toggle. ─────────────────────────────────────────────────
   document.getElementById('day-chips').addEventListener('click', e => {
     if (e.target.classList.contains('day-chip')) {
       e.target.classList.toggle('active');
@@ -637,16 +675,16 @@
     document.getElementById('logout-row').style.display = loggedIn ? 'flex' : 'none';
   }
 
-  // ── Form actions. Save logic is intentionally a UI stub — the backend
-  //    persistence is a separate sprint task. ──────────────────────────
-  function showToast(msg) {
+  // ── Form actions. ────────────────────────────────────────────────────
+  function showToast(msg, isError = false) {
     const t = document.getElementById('toast');
     t.textContent = msg;
+    t.style.background = isError ? 'var(--error)' : 'var(--success)';
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
-  function handleSave() {
+  async function handleSave() {
     const name = document.getElementById('name').value.trim();
     const nameError = document.getElementById('name-error');
     nameError.classList.remove('show');
@@ -656,15 +694,51 @@
       return;
     }
 
-    // Reflect the new name in the on-page header card immediately. This is
-    // local UI state only — it is NOT persisted to the server here.
-    document.getElementById('display-name').textContent = name;
-    document.getElementById('profile-pic').textContent = name
-      .trim().split(/\s+/).slice(0, 2).map(s => s[0]).join('').toUpperCase();
+    // Collect the selected day codes from any chips with .active.
+    const availability = [...document.querySelectorAll('.day-chip.active')]
+      .map(el => el.dataset.day);
 
-    // TODO (teammate task): POST updated fields to /api/auth/me (or wherever
-    // the new endpoint lives) and update the cached user object on success.
-    showToast('Profile updated successfully');
+    const body = {
+      phone:  document.getElementById('phone').value,
+      major:  document.getElementById('major').value,
+      bio:    document.getElementById('bio').value,
+      skills: document.getElementById('skills').value,
+      availability,
+    };
+
+    const saveBtn = document.getElementById('save-btn');
+    saveBtn.disabled = true;
+    const originalLabel = saveBtn.textContent;
+    saveBtn.textContent = 'Saving…';
+
+    try {
+      const res = await fetch('/api/auth/me', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', ...authHeader() },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        showToast(data.error || 'Could not save profile', true);
+        return;
+      }
+
+      if (data.user) {
+        // Keep the cached user in sync so other pages see the new values
+        // immediately, and re-render this page's header from truth.
+        localStorage.setItem('user', JSON.stringify(data.user));
+        setHeaderCard(data.user);
+      }
+
+      showToast('Profile updated successfully');
+    } catch (err) {
+      console.error('Save failed:', err);
+      showToast('Network error — please try again', true);
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = originalLabel;
+    }
   }
 
   function handleCancel() {
