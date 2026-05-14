@@ -1,14 +1,13 @@
 /**
- * accessibility.js — CSUS Volunteer Coordination Portal
+ Sprint 2 Adding accessbility features
+  Adds a floating accessibility widget with:
+ - Font size controls (increase / decrease / reset)
+ - High contrast mode toggle
  *
- * Adds a floating accessibility widget with:
- *  - Font size controls (increase / decrease / reset)
- *  - High contrast mode toggle
- *
- * Usage: add ONE line before </body> on any portal page:
- *   <script src="accessibility.js"></script>
- *
- * Preferences are saved to localStorage and restored on every page.
+TO USE: add ONE line before </body> on any portal page:
+ <script src="accessibility.js"></script>
+ 
+  Preferences are saved to localStorage and restored on every page.
  */
 
 (function () {
