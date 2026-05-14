@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CSUS Career Center Volunteer – Sign Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark: #3a5a2e;
+      --text: #1a1a1a;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --white: #ffffff;
+      --error: #dc2626;
+    }
+    body { font-family: 'DM Sans', sans-serif; height: 100vh; display: flex; overflow: hidden; }
+
+    .left {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 72px;
+      background: var(--white);
+      animation: fadeUp 0.7s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .brand h1 { font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 600; color: var(--text); white-space: nowrap; }
+
+    .form-section { margin-top: 48px; display: flex; flex-direction: column; gap: 20px; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+
+    label { font-size: 0.875rem; font-weight: 500; color: var(--text); }
+
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%; padding: 11px 16px;
+      border: 1px solid var(--border); border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--text);
+      background: var(--white); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input::placeholder { color: #b0b7c3; }
+    input:focus { border-color: var(--green-dark); box-shadow: 0 0 0 3px rgba(58,90,46,0.1); }
+
+    .terms-row { display: flex; align-items: center; gap: 8px; }
+    .terms-row input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--green-dark); cursor: pointer; }
+    .terms-row label { font-size: 0.85rem; color: var(--muted); font-weight: 300; cursor: pointer; }
+    .terms-row a { color: var(--text); font-weight: 500; text-decoration: underline; }
+
+    .btn-primary {
+      width: 100%; padding: 13px; border: none; border-radius: 8px;
+      background: var(--green-dark); color: var(--white);
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+    }
+    .btn-primary:hover { background: #2d4724; box-shadow: 0 4px 14px rgba(58,90,46,0.25); }
+    .btn-primary:active { transform: scale(0.99); }
+
+    .divider { display: flex; align-items: center; gap: 12px; font-size: 0.85rem; color: var(--muted); }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .social-row { display: flex; gap: 12px; }
+    .btn-social {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px 16px; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--white); font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem; color: var(--text); cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .btn-social:hover { border-color: #aab; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+
+    .signin-prompt { text-align: center; font-size: 0.875rem; color: var(--muted); }
+    .signin-prompt a { color: #2563eb; text-decoration: none; font-weight: 500; }
+    .signin-prompt a:hover { text-decoration: underline; }
+
+    .error-msg { font-size: 0.78rem; color: var(--error); display: none; }
+
+    /* Post-signup confirmation panel — replaces the form once the account is created. */
+    .verify-panel { display: none; flex-direction: column; gap: 16px; margin-top: 32px; }
+    .verify-panel.active { display: flex; }
+    .verify-panel .check {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: #eaf2e3; color: var(--green-dark);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 700;
+    }
+    .verify-panel h2 { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 600; color: var(--text); }
+    .verify-panel p  { font-size: 0.95rem; color: var(--muted); line-height: 1.55; }
+    .verify-panel .email-shown { color: var(--text); font-weight: 500; }
+    .verify-panel .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+    .verify-panel .btn-secondary {
+      flex: 1; min-width: 140px;
+      padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--white); color: var(--text); cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500;
+    }
+    .verify-panel .btn-secondary:hover { border-color: #aab; }
+    .verify-panel .btn-secondary[disabled] { opacity: 0.6; cursor: default; }
+    .verify-panel .resend-status { font-size: 0.85rem; color: var(--green-dark); display: none; }
+    .verify-panel .resend-status.show { display: block; }
+
+    .right { width: 50%; overflow: hidden; }
+    .right img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    @media (max-width: 768px) {
+      .right { display: none; }
+      .left { width: 100%; padding: 40px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="left">
+    <div class="brand"><h1>Get Started Now</h1></div>
+
+    <div class="form-section">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Enter your name" autocomplete="name"/>
+        <span class="error-msg" id="name-error">Name is required.</span>
+      </div>
+
+      <div class="field">
+        <label for="email">Email address</label>
+        <input type="email" id="email" placeholder="Enter your email" autocomplete="email"/>
+        <span class="error-msg" id="email-error">Please enter a valid email address.</span>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" autocomplete="new-password"/>
+        <span class="error-msg" id="pass-error">Password must be at least 8 characters.</span>
+      </div>
+
+      <div class="terms-row">
+        <input type="checkbox" id="terms"/>
+        <label for="terms">I agree to the <a href="#">terms &amp; policy</a></label>
+      </div>
+
+      <button class="btn-primary" onclick="handleSignup()">Signup</button>
+
+      <p class="signin-prompt">Have an account? <a href="login.html">Sign In</a></p>
+    </div>
+
+    <!-- Shown only after a successful signup. The form-section above is
+         hidden when this panel becomes active. -->
+    <div class="verify-panel" id="verify-panel">
+      <div class="check">✓</div>
+      <h2>Check your email</h2>
+      <p>
+        We sent a verification link to
+        <span class="email-shown" id="verify-email-shown"></span>.
+        Click the link in that email to confirm your address — once verified,
+        you'll be able to apply to volunteer events.
+      </p>
+      <p style="font-size: 0.85rem;">
+        Didn't get the email? Check your spam folder, or resend it below.
+      </p>
+      <div class="row">
+        <button class="btn-secondary" id="resend-btn" type="button">Resend email</button>
+        <button class="btn-secondary" id="continue-btn" type="button">Continue to events</button>
+      </div>
+      <span class="resend-status" id="resend-status">New verification email sent.</span>
+    </div>
+  </div>
+
+  <div class="right">
+    <img src="https://images.unsplash.com/photo-1525498128493-380d1990a112?w=900&q=80" alt="Monstera plant"/>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    // Stricter format check than /\S+@\S+\.\S+/ — requires a TLD of 2+
+    // letters and rejects whitespace/garbage. Backend re-checks this AND
+    // verifies the domain has DNS records that accept mail, so even if
+    // someone bypasses this in the browser they can't register a fake
+    // domain like "asdf@notarealdomain.zzz".
+    const EMAIL_REGEX = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+    function showEmailError(msg) {
+      const el = document.getElementById('email-error');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function handleSignup() {
+      const name     = document.getElementById('name');
+      const email    = document.getElementById('email');
+      const password = document.getElementById('password');
+      const terms    = document.getElementById('terms');
+
+      document.getElementById('name-error').style.display  = 'none';
+      document.getElementById('email-error').style.display = 'none';
+      document.getElementById('pass-error').style.display  = 'none';
+
+      const emailValue = email.value.trim().toLowerCase();
+
+      let valid = true;
+      if (!name.value.trim()) {
+        document.getElementById('name-error').style.display = 'block';
+        valid = false;
+      }
+      if (!emailValue || !EMAIL_REGEX.test(emailValue)) {
+        showEmailError('Please enter a valid email address.');
+        valid = false;
+      }
+      if (!password.value || password.value.length < 8) {
+        document.getElementById('pass-error').style.display = 'block';
+        valid = false;
+      }
+      if (!terms.checked) { alert('Please agree to the terms & policy to continue.'); valid = false; }
+      if (!valid) return;
+
+      fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name:     name.value.trim(),
+          email:    emailValue,
+          password: password.value
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          // Show email-specific errors (bad format, bad domain, already
+          // registered) inline next to the email field rather than as a
+          // disruptive alert. Other errors still alert.
+          const msg = data.error;
+          const isEmailError =
+            msg === 'email already registered' ||
+            msg.startsWith('please enter a valid email') ||
+            msg.startsWith('the email domain');
+          if (isEmailError) {
+            showEmailError(
+              msg === 'email already registered'
+                ? 'That email is already registered. Try logging in instead.'
+                : msg.charAt(0).toUpperCase() + msg.slice(1)
+            );
+          } else {
+            alert(msg);
+          }
+          return;
+        }
+        // Account created. Stash the JWT + user so we're "logged in", but
+        // DON'T redirect — show the "check your email" panel so it's
+        // unmistakable that there's a verification step waiting.
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        showVerifyPanel(data.user.email);
+      })
+      .catch(() => alert('Network error. Please try again.'));
+    }
+
+    function showVerifyPanel(email) {
+      document.querySelector('.form-section').style.display = 'none';
+      document.querySelector('.brand h1').textContent = 'You\u2019re almost in';
+      document.getElementById('verify-email-shown').textContent = email;
+      document.getElementById('verify-panel').classList.add('active');
+    }
+
+    // Resend the verification email. Uses the auth token we just stored,
+    // so the backend knows which account to re-send for.
+    document.getElementById('resend-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('resend-btn');
+      const status = document.getElementById('resend-status');
+      btn.disabled = true;
+      btn.textContent = 'Sending\u2026';
+      status.classList.remove('show');
+      try {
+        const res = await fetch('/api/auth/resend-verification', {
+          method: 'POST',
+          headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        });
+        const data = await res.json();
+        if (data.ok) {
+          status.textContent = data.alreadyVerified
+            ? 'This email is already verified.'
+            : 'New verification email sent.';
+          status.classList.add('show');
+          btn.textContent = 'Resent';
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Resend email';
+          alert(data.error || 'Could not resend right now.');
+        }
+      } catch {
+        btn.disabled = false;
+        btn.textContent = 'Resend email';
+        alert('Network error. Please try again.');
+      }
+    });
+
+    document.getElementById('continue-btn').addEventListener('click', () => {
+      // Lenient policy: unverified users can browse the site. The Apply
+      // button will prompt them to verify when they actually try to use it.
+      window.location.href = consumeRedirectAfterLogin();
+    });
+
+    // Enter-to-submit only applies while the form is visible.
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !document.getElementById('verify-panel').classList.contains('active')) {
+        handleSignup();
+      }
+    });
+  </script>
+</body>
+</html>
