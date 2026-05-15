@@ -1,5 +1,5 @@
 /**
- Sprint 2 Adding accessbility features
+ Sprint 2 Adding accessibility features
   Adds a floating accessibility widget with:
  - Font size controls (increase / decrease / reset)
  - High contrast mode toggle
