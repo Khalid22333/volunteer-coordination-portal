@@ -19,11 +19,11 @@ This portal replaces inefficient methods like email announcements and physical s
 
 | Name | Role |
 |------|------|
-| Dylan Hulett | |
-| Jayden Brown | |
-| Manjot Dhaliwal | |
-| Khalid Abid |Front end Login/Create Account |
-| Anna Kubrak | |
+| Dylan Hulett | Software developer|
+| Jayden Brown | Event Page Creation Front End/Back End: Software developer |
+| Manjot Dhaliwal | Software developer |
+| Khalid Abid | Front-end Login/Create Account |
+| Anna Kubrak | Software developer |
 
 ---
 
